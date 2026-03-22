@@ -1,0 +1,68 @@
+import { ColorTheme } from './types';
+
+export const colorThemes: ColorTheme[] = [
+  {
+    name: 'Royal Blue',
+    primary: '#2563EB',
+    secondary: '#1E40AF',
+    accent: '#F59E0B',
+    background: '#FFFFFF',
+    text: '#1F2937',
+  },
+  {
+    name: 'Emerald Green',
+    primary: '#059669',
+    secondary: '#047857',
+    accent: '#F59E0B',
+    background: '#FFFFFF',
+    text: '#1F2937',
+  },
+  {
+    name: 'Crimson Red',
+    primary: '#DC2626',
+    secondary: '#B91C1C',
+    accent: '#FCD34D',
+    background: '#FFFFFF',
+    text: '#1F2937',
+  },
+  {
+    name: 'Purple Dream',
+    primary: '#7C3AED',
+    secondary: '#6D28D9',
+    accent: '#F472B6',
+    background: '#FFFFFF',
+    text: '#1F2937',
+  },
+  {
+    name: 'Ocean Teal',
+    primary: '#0D9488',
+    secondary: '#0F766E',
+    accent: '#FB923C',
+    background: '#FFFFFF',
+    text: '#1F2937',
+  },
+  {
+    name: 'Sunset Orange',
+    primary: '#EA580C',
+    secondary: '#C2410C',
+    accent: '#A855F7',
+    background: '#FFFFFF',
+    text: '#1F2937',
+  },
+  {
+    name: 'Rose Pink',
+    primary: '#E11D48',
+    secondary: '#BE123C',
+    accent: '#06B6D4',
+    background: '#FFFFFF',
+    text: '#1F2937',
+  },
+  {
+    name: 'Dark Mode',
+    primary: '#3B82F6',
+    secondary: '#2563EB',
+    accent: '#F59E0B',
+    background: '#111827',
+    text: '#F9FAFB',
+  },
+];

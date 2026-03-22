@@ -1,0 +1,323 @@
+'use client';
+
+import { useState, useRef, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
+import {
+  HiOutlineArrowLeft,
+  HiOutlineEye,
+  HiOutlineGlobeAlt,
+  HiOutlineSave,
+  HiOutlineColorSwatch,
+  HiOutlineSearch,
+  HiOutlinePencil,
+  HiOutlineCheck,
+  HiOutlineX,
+} from 'react-icons/hi';
+import toast from 'react-hot-toast';
+import { useAppStore } from '@/lib/store';
+import * as api from '@/lib/api';
+import ColorPicker from './ColorPicker';
+import SeoEditor from './SeoEditor';
+
+export default function BuilderHeader() {
+  const router = useRouter();
+  const currentSite = useAppStore((s) => s.currentSite);
+  const sections = useAppStore((s) => s.sections);
+  const setCurrentSite = useAppStore((s) => s.setCurrentSite);
+
+  const [editingName, setEditingName] = useState(false);
+  const [nameValue, setNameValue] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [publishing, setPublishing] = useState(false);
+  const [showColorPicker, setShowColorPicker] = useState(false);
+  const [showSeoEditor, setShowSeoEditor] = useState(false);
+  const [editingSubdomain, setEditingSubdomain] = useState(false);
+  const [subdomainValue, setSubdomainValue] = useState('');
+
+  const nameInputRef = useRef<HTMLInputElement>(null);
+  const colorPickerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (editingName && nameInputRef.current) {
+      nameInputRef.current.focus();
+      nameInputRef.current.select();
+    }
+  }, [editingName]);
+
+  useEffect(() => {
+    if (!showColorPicker) return;
+    function handleClickOutside(e: MouseEvent) {
+      if (
+        colorPickerRef.current &&
+        !colorPickerRef.current.contains(e.target as Node)
+      ) {
+        setShowColorPicker(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showColorPicker]);
+
+  const startEditingName = useCallback(() => {
+    if (!currentSite) return;
+    setNameValue(currentSite.name);
+    setEditingName(true);
+  }, [currentSite]);
+
+  const saveName = useCallback(async () => {
+    if (!currentSite || !nameValue.trim()) return;
+    try {
+      const updated = await api.sites.updateSite(currentSite.id, {
+        name: nameValue.trim(),
+      });
+      setCurrentSite({ ...currentSite, ...updated });
+      toast.success('Site name updated');
+    } catch {
+      toast.error('Failed to update name');
+    }
+    setEditingName(false);
+  }, [currentSite, nameValue, setCurrentSite]);
+
+  const handleSaveAll = useCallback(async () => {
+    if (!currentSite) return;
+    setSaving(true);
+    try {
+      await api.sites.updateSite(currentSite.id, {
+        name: currentSite.name,
+        colorTheme: currentSite.colorTheme,
+        seoTitle: currentSite.seoTitle,
+        seoDescription: currentSite.seoDescription,
+        seoKeywords: currentSite.seoKeywords,
+      });
+      for (const section of sections) {
+        await api.sections.updateSection(currentSite.id, section.id, {
+          designVariant: section.designVariant,
+          isVisible: section.isVisible,
+          content: section.content,
+        });
+      }
+      toast.success('All changes saved');
+    } catch {
+      toast.error('Failed to save changes');
+    }
+    setSaving(false);
+  }, [currentSite, sections]);
+
+  const handleTogglePublish = useCallback(async () => {
+    if (!currentSite) return;
+    setPublishing(true);
+    try {
+      const updated = await api.sites.updateSite(currentSite.id, {
+        isPublished: !currentSite.isPublished,
+      });
+      setCurrentSite({ ...currentSite, ...updated });
+      toast.success(
+        updated.isPublished ? 'Site published!' : 'Site unpublished'
+      );
+    } catch {
+      toast.error('Failed to update publish status');
+    }
+    setPublishing(false);
+  }, [currentSite, setCurrentSite]);
+
+  if (!currentSite) return null;
+
+  return (
+    <>
+      <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 shrink-0 z-50">
+        {/* Left section */}
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => router.push('/dashboard')}
+            className="flex items-center gap-1.5 text-gray-500 hover:text-gray-800 transition-colors text-sm font-medium"
+          >
+            <HiOutlineArrowLeft className="w-4 h-4" />
+            <span className="hidden sm:inline">Dashboard</span>
+          </button>
+
+          <div className="w-px h-6 bg-gray-200" />
+
+          {editingName ? (
+            <div className="flex items-center gap-1.5">
+              <input
+                ref={nameInputRef}
+                type="text"
+                value={nameValue}
+                onChange={(e) => setNameValue(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') saveName();
+                  if (e.key === 'Escape') setEditingName(false);
+                }}
+                className="text-sm font-semibold text-gray-900 border border-gray-300 rounded-md px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-48"
+              />
+              <button
+                onClick={saveName}
+                className="p-1 text-green-600 hover:bg-green-50 rounded transition-colors"
+              >
+                <HiOutlineCheck className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => setEditingName(false)}
+                className="p-1 text-gray-400 hover:bg-gray-100 rounded transition-colors"
+              >
+                <HiOutlineX className="w-4 h-4" />
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={startEditingName}
+              className="flex items-center gap-1.5 group"
+            >
+              <span className="text-sm font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
+                {currentSite.name}
+              </span>
+              <HiOutlinePencil className="w-3.5 h-3.5 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+            </button>
+          )}
+
+          {/* Subdomain badge/editor */}
+          <div className="w-px h-6 bg-gray-200" />
+          {editingSubdomain ? (
+            <div className="flex items-center gap-1">
+              <input
+                type="text"
+                value={subdomainValue}
+                onChange={(e) => setSubdomainValue(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    if (!currentSite) return;
+                    api.sites.updateSite(currentSite.id, { subdomain: subdomainValue || undefined } as any)
+                      .then((updated) => {
+                        setCurrentSite({ ...currentSite, ...updated });
+                        toast.success('Subdomain updated');
+                        setEditingSubdomain(false);
+                      })
+                      .catch(() => toast.error('Subdomain may be taken'));
+                  }
+                  if (e.key === 'Escape') setEditingSubdomain(false);
+                }}
+                placeholder="my-site"
+                className="text-xs border border-gray-300 rounded px-2 py-1 w-28 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <span className="text-xs text-gray-400">.localhost</span>
+              <button
+                onClick={() => {
+                  if (!currentSite) return;
+                  api.sites.updateSite(currentSite.id, { subdomain: subdomainValue || undefined } as any)
+                    .then((updated) => {
+                      setCurrentSite({ ...currentSite, ...updated });
+                      toast.success('Subdomain updated');
+                      setEditingSubdomain(false);
+                    })
+                    .catch(() => toast.error('Subdomain may be taken'));
+                }}
+                className="p-1 text-green-600 hover:bg-green-50 rounded"
+              >
+                <HiOutlineCheck className="w-3.5 h-3.5" />
+              </button>
+              <button onClick={() => setEditingSubdomain(false)} className="p-1 text-gray-400 hover:bg-gray-100 rounded">
+                <HiOutlineX className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => {
+                setSubdomainValue(currentSite?.subdomain || '');
+                setEditingSubdomain(true);
+              }}
+              className="flex items-center gap-1 px-2 py-1 text-xs text-gray-500 hover:text-gray-800 hover:bg-gray-100 rounded transition-colors"
+              title="Set subdomain"
+            >
+              <HiOutlineGlobeAlt className="w-3.5 h-3.5" />
+              {currentSite?.subdomain ? (
+                <span className="font-medium">{currentSite.subdomain}.localhost</span>
+              ) : (
+                <span className="italic">Set subdomain</span>
+              )}
+            </button>
+          )}
+        </div>
+
+        {/* Right section */}
+        <div className="flex items-center gap-2">
+          {/* Color Theme */}
+          <div className="relative" ref={colorPickerRef}>
+            <button
+              onClick={() => setShowColorPicker((v) => !v)}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              <HiOutlineColorSwatch className="w-4 h-4" />
+              <span className="hidden md:inline">Theme</span>
+              <div
+                className="w-3 h-3 rounded-full border border-gray-300"
+                style={{ backgroundColor: currentSite.colorTheme.primary }}
+              />
+            </button>
+            {showColorPicker && (
+              <div className="absolute right-0 top-full mt-2 z-50">
+                <ColorPicker onClose={() => setShowColorPicker(false)} />
+              </div>
+            )}
+          </div>
+
+          {/* SEO */}
+          <button
+            onClick={() => setShowSeoEditor(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+          >
+            <HiOutlineSearch className="w-4 h-4" />
+            <span className="hidden md:inline">SEO</span>
+          </button>
+
+          <div className="w-px h-6 bg-gray-200" />
+
+          {/* Preview */}
+          <a
+            href={`/preview/${currentSite.slug}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+          >
+            <HiOutlineEye className="w-4 h-4" />
+            <span className="hidden md:inline">Preview</span>
+          </a>
+
+          {/* Publish Toggle */}
+          <button
+            onClick={handleTogglePublish}
+            disabled={publishing}
+            className={`flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg transition-all ${
+              currentSite.isPublished
+                ? 'bg-green-50 text-green-700 hover:bg-green-100 border border-green-200'
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200 border border-gray-200'
+            }`}
+          >
+            <HiOutlineGlobeAlt className="w-4 h-4" />
+            <span className="hidden sm:inline">
+              {publishing
+                ? '...'
+                : currentSite.isPublished
+                  ? 'Published'
+                  : 'Publish'}
+            </span>
+          </button>
+
+          {/* Save All */}
+          <button
+            onClick={handleSaveAll}
+            disabled={saving}
+            className="flex items-center gap-1.5 px-4 py-1.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 rounded-lg transition-colors shadow-sm"
+          >
+            <HiOutlineSave className="w-4 h-4" />
+            {saving ? 'Saving...' : 'Save All'}
+          </button>
+        </div>
+      </header>
+
+      {/* SEO Slide-over */}
+      {showSeoEditor && (
+        <SeoEditor onClose={() => setShowSeoEditor(false)} />
+      )}
+    </>
+  );
+}

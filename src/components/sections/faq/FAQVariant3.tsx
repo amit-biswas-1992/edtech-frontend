@@ -1,0 +1,122 @@
+"use client";
+
+import React, { useState } from "react";
+
+interface SectionProps {
+  content: Record<string, any>;
+  colorTheme: {
+    primary: string;
+    secondary: string;
+    accent: string;
+    background: string;
+    text: string;
+    name: string;
+  };
+  designVariant: number;
+}
+
+export default function FAQVariant3({ content, colorTheme }: SectionProps) {
+  const heading = content.heading || "Frequently Asked Questions";
+  const subtitle =
+    content.subtitle || "Find answers to common questions about our programs.";
+  const faqs: { question: string; answer: string }[] = content.faqs || [
+    {
+      question: "What programs do you offer?",
+      answer:
+        "We offer comprehensive admission coaching programs for medical, engineering, and university entrance exams.",
+    },
+    {
+      question: "How long are the courses?",
+      answer:
+        "Our courses range from 3 months to 1 year depending on the program and your preparation needs.",
+    },
+    {
+      question: "What is the class schedule?",
+      answer:
+        "We offer flexible scheduling with morning, afternoon, and evening batches to suit your convenience.",
+    },
+    {
+      question: "Do you provide study materials?",
+      answer:
+        "Yes, all enrolled students receive comprehensive study materials, practice tests, and access to our online resource library.",
+    },
+  ];
+
+  const [openIndex, setOpenIndex] = useState<number | null>(0);
+
+  return (
+    <section className="py-16 md:py-24 px-6">
+      <div className="max-w-5xl mx-auto">
+        <div className="grid md:grid-cols-[1fr,2fr] gap-12">
+          <div>
+            <h2
+              className="text-3xl md:text-4xl font-bold mb-4"
+              style={{ color: colorTheme.text }}
+            >
+              {heading}
+            </h2>
+            <p className="text-base opacity-70" style={{ color: colorTheme.text }}>
+              {subtitle}
+            </p>
+          </div>
+
+          <div className="space-y-2">
+            {faqs.map((faq, index) => (
+              <div
+                key={index}
+                className="rounded-lg overflow-hidden"
+                style={{
+                  backgroundColor:
+                    openIndex === index ? `${colorTheme.primary}10` : "transparent",
+                }}
+              >
+                <button
+                  className="w-full text-left px-5 py-4 flex items-center justify-between gap-4"
+                  onClick={() =>
+                    setOpenIndex(openIndex === index ? null : index)
+                  }
+                >
+                  <span
+                    className="font-medium text-base"
+                    style={{
+                      color:
+                        openIndex === index
+                          ? colorTheme.primary
+                          : colorTheme.text,
+                    }}
+                  >
+                    {faq.question}
+                  </span>
+                  <svg
+                    className={`w-5 h-5 shrink-0 transition-transform duration-200 ${
+                      openIndex === index ? "rotate-180" : ""
+                    }`}
+                    style={{ color: colorTheme.primary }}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </button>
+                {openIndex === index && (
+                  <div
+                    className="px-5 pb-4 text-sm leading-relaxed opacity-70"
+                    style={{ color: colorTheme.text }}
+                  >
+                    {faq.answer}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
