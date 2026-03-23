@@ -261,6 +261,7 @@ export default function BuilderPage() {
                     section={section}
                     colorTheme={effectiveTheme}
                     isSelected={selectedSectionId === section.id}
+                    language={currentSite.language || 'bn'}
                   />
                 ))
               )}
@@ -289,16 +290,25 @@ interface PreviewSectionProps {
   section: import('@/lib/types').SiteSection;
   colorTheme: import('@/lib/types').ColorTheme;
   isSelected: boolean;
+  language?: string;
 }
 
 function PreviewSection({
   section,
   colorTheme,
   isSelected,
+  language = 'bn',
 }: PreviewSectionProps) {
   const selectSection = useAppStore((s) => s.selectSection);
   const meta = sectionMeta[section.sectionType];
   const c = section.content ?? {};
+
+  // Helper: pick localized field based on language
+  const loc = (field: string, fallback?: string) => {
+    if (language === 'bn') return c[`${field}Bn`] || c[field] || fallback || '';
+    if (language === 'hi') return c[`${field}Hi`] || c[field] || fallback || '';
+    return c[field] || fallback || '';
+  };
 
   return (
     <div
@@ -340,10 +350,10 @@ function PreviewSection({
             {/* Content */}
             <div className="relative z-10">
               <h1 className="text-4xl font-extrabold text-white mb-4 drop-shadow-lg">
-                {c.title || 'Hero Title'}
+                {loc('title', 'Hero Title')}
               </h1>
               <p className="text-lg text-white/85 mb-8 max-w-xl mx-auto">
-                {c.subtitle || 'Your subtitle goes here'}
+                {loc('subtitle', 'Your subtitle goes here')}
               </p>
               {c.ctaText && (
                 <span
@@ -371,11 +381,11 @@ function PreviewSection({
               className="text-2xl font-bold mb-4 text-center"
               style={{ color: colorTheme.primary }}
             >
-              {c.title || 'About Us'}
+              {loc('title', 'About Us')}
             </h2>
             <div className="w-16 h-1 mx-auto rounded-full mb-6" style={{ background: `linear-gradient(90deg, ${colorTheme.primary}, ${colorTheme.accent})` }} />
             <p className="text-center max-w-2xl mx-auto text-sm leading-relaxed" style={{ color: `${colorTheme.text}aa` }}>
-              {c.description || 'Tell your story here...'}
+              {loc('description', 'Tell your story here...')}
             </p>
             {(c.mission || c.vision) && (
               <div className="grid grid-cols-2 gap-6 mt-8 max-w-2xl mx-auto">
@@ -402,7 +412,7 @@ function PreviewSection({
               className="text-2xl font-bold mb-2 text-center"
               style={{ color: colorTheme.primary }}
             >
-              {c.title || 'Our Courses'}
+              {loc('title', 'Our Courses')}
             </h2>
             {c.subtitle && (
               <p className="text-gray-600 text-center text-sm mb-8">{c.subtitle}</p>
@@ -430,7 +440,7 @@ function PreviewSection({
         {section.sectionType === 'admission_info' && (
           <div className="py-12 px-8">
             <h2 className="text-2xl font-bold mb-6 text-center" style={{ color: colorTheme.primary }}>
-              {c.title || 'Admissions'}
+              {loc('title', 'Admissions')}
             </h2>
             {c.deadline && (
               <div className="text-center mb-6">
@@ -458,7 +468,7 @@ function PreviewSection({
         {section.sectionType === 'success_stories' && (
           <div className="py-12 px-8">
             <h2 className="text-2xl font-bold mb-6 text-center" style={{ color: colorTheme.primary }}>
-              {c.title || 'Success Stories'}
+              {loc('title', 'Success Stories')}
             </h2>
             <div className="grid grid-cols-3 gap-4">
               {(c.stories ?? []).slice(0, 6).map((story: Record<string, string>, i: number) => (
@@ -485,7 +495,7 @@ function PreviewSection({
         {section.sectionType === 'faculty' && (
           <div className="py-12 px-8">
             <h2 className="text-2xl font-bold mb-6 text-center" style={{ color: colorTheme.primary }}>
-              {c.title || 'Our Faculty'}
+              {loc('title', 'Our Faculty')}
             </h2>
             <div className="grid grid-cols-4 gap-4">
               {(c.members ?? []).slice(0, 8).map((member: Record<string, string>, i: number) => (
@@ -512,7 +522,7 @@ function PreviewSection({
         {section.sectionType === 'testimonials' && (
           <div className="py-12 px-8" style={{ backgroundColor: `${colorTheme.primary}08` }}>
             <h2 className="text-2xl font-bold mb-6 text-center" style={{ color: colorTheme.primary }}>
-              {c.title || 'Testimonials'}
+              {loc('title', 'Testimonials')}
             </h2>
             <div className="grid grid-cols-3 gap-4 max-w-3xl mx-auto">
               {(c.items ?? []).slice(0, 3).map((item: Record<string, string>, i: number) => (
@@ -540,7 +550,7 @@ function PreviewSection({
         {section.sectionType === 'faq' && (
           <div className="py-12 px-8">
             <h2 className="text-2xl font-bold mb-6 text-center" style={{ color: colorTheme.primary }}>
-              {c.title || 'FAQ'}
+              {loc('title', 'FAQ')}
             </h2>
             <div className="max-w-2xl mx-auto space-y-3">
               {(c.items ?? []).map((item: Record<string, string>, i: number) => (
@@ -561,7 +571,7 @@ function PreviewSection({
         {section.sectionType === 'contact' && (
           <div className="py-12 px-8">
             <h2 className="text-2xl font-bold mb-6 text-center" style={{ color: colorTheme.primary }}>
-              {c.title || 'Contact Us'}
+              {loc('title', 'Contact Us')}
             </h2>
             <div className="grid grid-cols-3 gap-6 max-w-2xl mx-auto text-center">
               {c.address && (
@@ -605,7 +615,7 @@ function PreviewSection({
         {section.sectionType === 'features' && (
           <div className="py-12 px-8">
             <h2 className="text-2xl font-bold mb-2 text-center" style={{ color: colorTheme.primary }}>
-              {c.title || 'Features'}
+              {loc('title', 'Features')}
             </h2>
             {c.subtitle && (
               <p className="text-gray-600 text-center text-sm mb-8">{c.subtitle}</p>
@@ -634,7 +644,7 @@ function PreviewSection({
         {section.sectionType === 'pricing' && (
           <div className="py-12 px-8" style={{ backgroundColor: `${colorTheme.primary}05` }}>
             <h2 className="text-2xl font-bold mb-8 text-center" style={{ color: colorTheme.primary }}>
-              {c.title || 'Pricing'}
+              {loc('title', 'Pricing')}
             </h2>
             <div className="grid grid-cols-3 gap-4 max-w-3xl mx-auto">
               {(c.plans ?? []).slice(0, 3).map((plan: Record<string, any>, i: number) => (
@@ -673,7 +683,7 @@ function PreviewSection({
             }}
           >
             <h2 className="text-2xl font-bold text-white mb-3">
-              {c.title || 'Ready to Get Started?'}
+              {loc('title', 'Ready to Get Started?')}
             </h2>
             <p className="text-white/80 text-sm mb-6 max-w-lg mx-auto">
               {c.subtitle || 'Join us today'}
@@ -720,7 +730,7 @@ function PreviewSection({
         {section.sectionType === 'gallery' && (
           <div className="py-12 px-8">
             <h2 className="text-2xl font-bold mb-6 text-center" style={{ color: colorTheme.primary }}>
-              {c.title || 'Gallery'}
+              {loc('title', 'Gallery')}
             </h2>
             <div className="grid grid-cols-4 gap-3">
               {(c.images ?? []).slice(0, 8).map((img: Record<string, string>, i: number) => (

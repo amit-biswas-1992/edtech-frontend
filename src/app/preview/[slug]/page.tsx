@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import SiteRenderer from '@/components/preview/SiteRenderer';
+import PreviewToolbar from '@/components/preview/PreviewToolbar';
 import { Course, Notice, Promo, Result, ResultStats, Schedule, Site, Teacher } from '@/lib/types';
 
 interface Props {
@@ -164,16 +165,19 @@ export default async function PreviewPage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <SiteRenderer
-        site={site}
-        courses={coursesData}
-        teachers={teachersData}
-        promos={promosData}
-        schedules={schedulesData}
-        results={resultsData}
-        resultStats={resultStatsData}
-        notices={noticesData}
-      />
+      <PreviewToolbar siteId={site.id} siteName={site.name} slug={site.slug} />
+      <div className="preview-viewport">
+        <SiteRenderer
+          site={site}
+          courses={coursesData}
+          teachers={teachersData}
+          promos={promosData}
+          schedules={schedulesData}
+          results={resultsData}
+          resultStats={resultStatsData}
+          notices={noticesData}
+        />
+      </div>
     </>
   );
 }
