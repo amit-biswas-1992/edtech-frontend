@@ -347,14 +347,14 @@ function PreviewSection({
               </p>
               {c.ctaText && (
                 <span
-                  className="inline-block px-8 py-3 rounded-full font-bold text-sm shadow-lg transition-transform hover:scale-105"
+                  className="inline-block px-8 py-3.5 rounded-full font-bold text-sm shadow-xl transition-transform hover:scale-105 backdrop-blur-sm border border-white/30"
                   style={{
-                    background: `linear-gradient(135deg, ${colorTheme.accent}, ${colorTheme.accent}dd)`,
-                    color: '#fff',
-                    boxShadow: `0 8px 25px ${colorTheme.accent}44`,
+                    background: 'rgba(255,255,255,0.95)',
+                    color: colorTheme.primary,
+                    boxShadow: `0 8px 30px ${colorTheme.primary}33`,
                   }}
                 >
-                  {c.ctaText}
+                  {c.ctaText} →
                 </span>
               )}
             </div>
