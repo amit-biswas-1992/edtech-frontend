@@ -5,6 +5,7 @@ import { Course, Notice, Promo, Result, ResultStats, Schedule, Site, Teacher } f
 
 interface Props {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ embed?: string }>;
 }
 
 const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
@@ -113,8 +114,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function PreviewPage({ params }: Props) {
+export default async function PreviewPage({ params, searchParams }: Props) {
   const { slug } = await params;
+  const { embed } = await searchParams;
+  const isEmbed = embed === '1';
   const site = await getSite(slug);
 
   if (!site) {
@@ -165,7 +168,7 @@ export default async function PreviewPage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <PreviewToolbar siteId={site.id} siteName={site.name} slug={site.slug} />
+      {!isEmbed && <PreviewToolbar siteId={site.id} siteName={site.name} slug={site.slug} />}
       <div className="preview-viewport">
         <SiteRenderer
           site={site}

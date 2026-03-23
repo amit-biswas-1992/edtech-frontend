@@ -106,22 +106,34 @@ export default function PreviewToolbar({ siteId, siteName, slug }: PreviewToolba
         </div>
       </div>
 
-      {/* Viewport container - applies responsive width */}
+      {/* Viewport container - uses iframe for mobile/tablet so Tailwind breakpoints work */}
+      {viewMode !== 'desktop' ? (
+        <div className="flex justify-center bg-gray-100 min-h-[calc(100vh-56px)] py-4 px-4">
+          <div
+            className="bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-200 transition-all duration-300"
+            style={{
+              width: viewModes.find(m => m.key === viewMode)?.width || '375px',
+              maxHeight: 'calc(100vh - 88px)',
+            }}
+          >
+            <iframe
+              src={`/preview/${slug}?embed=1`}
+              className="w-full border-0"
+              style={{
+                height: viewMode === 'mobile' ? '812px' : '1024px',
+                transform: 'scale(1)',
+                transformOrigin: 'top left',
+              }}
+              title="Preview"
+            />
+          </div>
+        </div>
+      ) : null}
+
+      {/* Hide main content when in mobile/tablet mode (iframe replaces it) */}
       <style>{`
-        .preview-viewport {
-          max-width: ${viewModes.find(m => m.key === viewMode)?.width || '100%'};
-          margin: 0 auto;
-          transition: max-width 0.3s ease;
-        }
         ${viewMode !== 'desktop' ? `
-        .preview-viewport {
-          box-shadow: 0 0 0 1px rgba(0,0,0,0.08), 0 4px 20px rgba(0,0,0,0.06);
-          border-radius: 12px;
-          overflow: hidden;
-          margin-top: 16px;
-          margin-bottom: 16px;
-        }
-        body { background-color: #f3f4f6 !important; }
+        .preview-viewport { display: none !important; }
         ` : ''}
       `}</style>
     </>
