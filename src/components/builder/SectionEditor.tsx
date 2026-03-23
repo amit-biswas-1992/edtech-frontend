@@ -9,6 +9,12 @@ import { sectionMeta } from '@/lib/section-labels';
 import DesignVariantPicker from './DesignVariantPicker';
 import type { SiteSection, SectionType } from '@/lib/types';
 
+/** Safely coerce any value to an array (handles null, undefined, objects, strings) */
+function asArray(val: unknown): Record<string, any>[] {
+  if (Array.isArray(val)) return val;
+  return [];
+}
+
 /* ------------------------------------------------------------------ */
 /*  Reusable field components                                          */
 /* ------------------------------------------------------------------ */
@@ -292,7 +298,7 @@ export default function SectionEditor() {
                   }
                 />
                 <div className="space-y-2">
-                  {(c.courses ?? []).map((item: Record<string, string>, i: number) => (
+                  {asArray(c.courses).map((item: Record<string, string>, i: number) => (
                     <ArrayItemWrapper
                       key={i}
                       index={i}
@@ -322,7 +328,7 @@ export default function SectionEditor() {
                   }
                 />
                 <div className="space-y-2">
-                  {(c.steps ?? []).map((item: Record<string, string>, i: number) => (
+                  {asArray(c.steps).map((item: Record<string, string>, i: number) => (
                     <ArrayItemWrapper
                       key={i}
                       index={i}
@@ -353,7 +359,7 @@ export default function SectionEditor() {
                   }
                 />
                 <div className="space-y-2">
-                  {(c.stories ?? []).map((item: Record<string, string>, i: number) => (
+                  {asArray(c.stories).map((item: Record<string, string>, i: number) => (
                     <ArrayItemWrapper
                       key={i}
                       index={i}
@@ -386,7 +392,7 @@ export default function SectionEditor() {
                   }
                 />
                 <div className="space-y-2">
-                  {(c.members ?? []).map((item: Record<string, string>, i: number) => (
+                  {asArray(c.members).map((item: Record<string, string>, i: number) => (
                     <ArrayItemWrapper
                       key={i}
                       index={i}
@@ -419,7 +425,7 @@ export default function SectionEditor() {
                   }
                 />
                 <div className="space-y-2">
-                  {(c.items ?? []).map((item: Record<string, string>, i: number) => (
+                  {asArray(c.items).map((item: Record<string, string>, i: number) => (
                     <ArrayItemWrapper
                       key={i}
                       index={i}
@@ -447,7 +453,7 @@ export default function SectionEditor() {
                   }
                 />
                 <div className="space-y-2">
-                  {(c.items ?? []).map((item: Record<string, string>, i: number) => (
+                  {asArray(c.items).map((item: Record<string, string>, i: number) => (
                     <ArrayItemWrapper
                       key={i}
                       index={i}
@@ -484,7 +490,7 @@ export default function SectionEditor() {
                   }
                 />
                 <div className="space-y-2">
-                  {(c.links ?? []).map((item: Record<string, string>, i: number) => (
+                  {asArray(c.links).map((item: Record<string, string>, i: number) => (
                     <ArrayItemWrapper
                       key={i}
                       index={i}
@@ -504,7 +510,7 @@ export default function SectionEditor() {
                   }
                 />
                 <div className="space-y-2">
-                  {(c.socialLinks ?? []).map((item: Record<string, string>, i: number) => (
+                  {asArray(c.socialLinks).map((item: Record<string, string>, i: number) => (
                     <ArrayItemWrapper
                       key={i}
                       index={i}
@@ -535,7 +541,7 @@ export default function SectionEditor() {
                   }
                 />
                 <div className="space-y-2">
-                  {(c.items ?? []).map((item: Record<string, string>, i: number) => (
+                  {asArray(c.items).map((item: Record<string, string>, i: number) => (
                     <ArrayItemWrapper
                       key={i}
                       index={i}
@@ -568,7 +574,7 @@ export default function SectionEditor() {
                   }
                 />
                 <div className="space-y-2">
-                  {(c.plans ?? []).map((item: Record<string, any>, i: number) => (
+                  {asArray(c.plans).map((item: Record<string, any>, i: number) => (
                     <ArrayItemWrapper
                       key={i}
                       index={i}
@@ -622,7 +628,7 @@ export default function SectionEditor() {
                   }
                 />
                 <div className="space-y-2">
-                  {(c.items ?? []).map((item: Record<string, string>, i: number) => (
+                  {asArray(c.items).map((item: Record<string, string>, i: number) => (
                     <ArrayItemWrapper
                       key={i}
                       index={i}
@@ -649,7 +655,7 @@ export default function SectionEditor() {
                   }
                 />
                 <div className="space-y-2">
-                  {(c.images ?? []).map((item: Record<string, string>, i: number) => (
+                  {asArray(c.images).map((item: Record<string, string>, i: number) => (
                     <ArrayItemWrapper
                       key={i}
                       index={i}
