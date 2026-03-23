@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Toaster } from 'react-hot-toast';
 import { useAppStore } from '@/lib/store';
@@ -9,6 +9,7 @@ import { sectionMeta } from '@/lib/section-labels';
 import BuilderHeader from '@/components/builder/BuilderHeader';
 import BuilderSidebar from '@/components/builder/BuilderSidebar';
 import SectionEditor from '@/components/builder/SectionEditor';
+import type { ColorTheme } from '@/lib/types';
 
 export default function BuilderPage() {
   const params = useParams<{ siteId: string }>();
@@ -90,6 +91,38 @@ export default function BuilderPage() {
       setCurrentSite(null);
     };
   }, [setCurrentSite]);
+
+  // Feature 1: Auto-scroll to newly selected section (must be before early returns)
+  useEffect(() => {
+    if (selectedSectionId) {
+      const timer = setTimeout(() => {
+        const el = document.getElementById(`section-${selectedSectionId}`);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [selectedSectionId]);
+
+  // Feature 2: Dark mode preview support (must be before early returns)
+  const effectiveTheme: ColorTheme = useMemo(() => {
+    if (currentSite?.themeMode === 'dark') {
+      return {
+        ...currentSite.colorTheme,
+        background: '#111827',
+        text: '#F9FAFB',
+      };
+    }
+    return currentSite?.colorTheme ?? {
+      primary: '#3B82F6',
+      secondary: '#6366F1',
+      accent: '#F59E0B',
+      background: '#FFFFFF',
+      text: '#1F2937',
+      name: 'Default',
+    };
+  }, [currentSite?.colorTheme, currentSite?.themeMode]);
 
   if (loading) {
     return (
@@ -191,10 +224,10 @@ export default function BuilderPage() {
 
             {/* Preview frame */}
             <div
-              className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden"
+              className={`bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden ${currentSite.themeMode === 'dark' ? 'dark' : ''}`}
               style={{
-                backgroundColor: currentSite.colorTheme.background,
-                color: currentSite.colorTheme.text,
+                backgroundColor: effectiveTheme.background,
+                color: effectiveTheme.text,
               }}
             >
               {visibleSections.length === 0 ? (
@@ -226,7 +259,7 @@ export default function BuilderPage() {
                   <PreviewSection
                     key={section.id}
                     section={section}
-                    colorTheme={currentSite.colorTheme}
+                    colorTheme={effectiveTheme}
                     isSelected={selectedSectionId === section.id}
                   />
                 ))
@@ -269,6 +302,7 @@ function PreviewSection({
 
   return (
     <div
+      id={`section-${section.id}`}
       onClick={() => selectSection(section.id)}
       className={`relative cursor-pointer transition-all group ${
         isSelected ? 'ring-2 ring-blue-500 ring-inset' : ''

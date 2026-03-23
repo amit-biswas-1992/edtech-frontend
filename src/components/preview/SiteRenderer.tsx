@@ -1,6 +1,7 @@
 'use client';
 
-import { Course, Notice, Promo, Result, ResultStats, Schedule, Site, SiteSection, SectionType, Teacher } from '@/lib/types';
+import { useMemo } from 'react';
+import { ColorTheme, Course, Notice, Promo, Result, ResultStats, Schedule, Site, SiteSection, SectionType, Teacher } from '@/lib/types';
 import HeroSection from '@/components/sections/hero';
 import AboutSection from '@/components/sections/about';
 import CoursesSection from '@/components/sections/courses';
@@ -71,11 +72,24 @@ export default function SiteRenderer({
     ((site.chatConfig.showWhatsapp && site.chatConfig.whatsappNumber) ||
      (site.chatConfig.showMessenger && site.chatConfig.messengerPageId));
 
+  // Feature 2: Dark mode support for generated sites
+  const effectiveTheme: ColorTheme = useMemo(() => {
+    if (site.themeMode === 'dark') {
+      return {
+        ...site.colorTheme,
+        background: '#111827',
+        text: '#F9FAFB',
+      };
+    }
+    return site.colorTheme;
+  }, [site.colorTheme, site.themeMode]);
+
   return (
     <div
+      className={site.themeMode === 'dark' ? 'dark' : ''}
       style={{
-        backgroundColor: site.colorTheme.background,
-        color: site.colorTheme.text,
+        backgroundColor: effectiveTheme.background,
+        color: effectiveTheme.text,
         minHeight: '100vh',
       }}
     >
@@ -99,7 +113,7 @@ export default function SiteRenderer({
           <Component
             key={section.id}
             content={section.content}
-            colorTheme={site.colorTheme}
+            colorTheme={effectiveTheme}
             designVariant={section.designVariant}
             {...extraProps}
           />
@@ -108,19 +122,19 @@ export default function SiteRenderer({
 
       {/* New Sections - After existing sections */}
       {publishedNotices.length > 0 && (
-        <NoticeBoard notices={publishedNotices} colorTheme={site.colorTheme} />
+        <NoticeBoard notices={publishedNotices} colorTheme={effectiveTheme} />
       )}
 
       {activeSchedules.length > 0 && (
-        <ScheduleView schedules={activeSchedules} colorTheme={site.colorTheme} />
+        <ScheduleView schedules={activeSchedules} colorTheme={effectiveTheme} />
       )}
 
       {results.length > 0 && (
-        <ResultShowcase results={results} resultStats={resultStats} colorTheme={site.colorTheme} />
+        <ResultShowcase results={results} resultStats={resultStats} colorTheme={effectiveTheme} />
       )}
 
       {/* Enrollment form is always shown - this is the conversion point */}
-      <EnrollmentForm siteId={site.id} courses={courses} colorTheme={site.colorTheme} />
+      <EnrollmentForm siteId={site.id} courses={courses} colorTheme={effectiveTheme} />
 
       {/* Floating Chat Widget */}
       {showChatWidget && site.chatConfig && (

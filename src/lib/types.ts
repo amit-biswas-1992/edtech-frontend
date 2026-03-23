@@ -51,6 +51,8 @@ export interface Site {
   teachers?: Teacher[];
   promos?: Promo[];
   chatConfig: ChatConfig | null;
+  themeMode?: 'light' | 'dark' | 'system';
+  language?: 'en' | 'bn' | 'hi';
   createdAt: string;
   updatedAt: string;
 }

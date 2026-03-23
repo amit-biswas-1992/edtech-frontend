@@ -12,12 +12,16 @@ import {
   HiOutlinePencil,
   HiOutlineCheck,
   HiOutlineX,
+  HiOutlineMoon,
+  HiOutlineSun,
+  HiOutlineTranslate,
 } from 'react-icons/hi';
 import toast from 'react-hot-toast';
 import { useAppStore } from '@/lib/store';
 import * as api from '@/lib/api';
 import ColorPicker from './ColorPicker';
 import SeoEditor from './SeoEditor';
+import type { Language } from '@/lib/translations';
 
 export default function BuilderHeader() {
   const router = useRouter();
@@ -88,6 +92,8 @@ export default function BuilderHeader() {
         seoTitle: currentSite.seoTitle,
         seoDescription: currentSite.seoDescription,
         seoKeywords: currentSite.seoKeywords,
+        themeMode: currentSite.themeMode,
+        language: currentSite.language,
       });
       for (const section of sections) {
         await api.sections.updateSection(currentSite.id, section.id, {
@@ -119,6 +125,36 @@ export default function BuilderHeader() {
     }
     setPublishing(false);
   }, [currentSite, setCurrentSite]);
+
+  const handleThemeModeChange = useCallback(
+    async (mode: 'light' | 'dark' | 'system') => {
+      if (!currentSite) return;
+      const prev = currentSite.themeMode;
+      setCurrentSite({ ...currentSite, themeMode: mode });
+      try {
+        await api.sites.updateSite(currentSite.id, { themeMode: mode });
+      } catch {
+        setCurrentSite({ ...currentSite, themeMode: prev });
+        toast.error('Failed to update theme mode');
+      }
+    },
+    [currentSite, setCurrentSite]
+  );
+
+  const handleLanguageChange = useCallback(
+    async (lang: Language) => {
+      if (!currentSite) return;
+      const prev = currentSite.language;
+      setCurrentSite({ ...currentSite, language: lang });
+      try {
+        await api.sites.updateSite(currentSite.id, { language: lang });
+      } catch {
+        setCurrentSite({ ...currentSite, language: prev });
+        toast.error('Failed to update language');
+      }
+    },
+    [currentSite, setCurrentSite]
+  );
 
   if (!currentSite) return null;
 
@@ -258,6 +294,80 @@ export default function BuilderHeader() {
                 <ColorPicker onClose={() => setShowColorPicker(false)} />
               </div>
             )}
+          </div>
+
+          {/* Theme Mode Toggle */}
+          <div className="flex items-center bg-gray-100 rounded-lg p-0.5">
+            <button
+              onClick={() => handleThemeModeChange('light')}
+              className={`flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-md transition-all ${
+                (currentSite.themeMode ?? 'light') === 'light'
+                  ? 'bg-white text-yellow-600 shadow-sm'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+              title="Light mode"
+            >
+              <HiOutlineSun className="w-3.5 h-3.5" />
+            </button>
+            <button
+              onClick={() => handleThemeModeChange('system')}
+              className={`flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-md transition-all ${
+                currentSite.themeMode === 'system'
+                  ? 'bg-white text-blue-600 shadow-sm'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+              title="System mode"
+            >
+              <HiOutlineEye className="w-3.5 h-3.5" />
+            </button>
+            <button
+              onClick={() => handleThemeModeChange('dark')}
+              className={`flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-md transition-all ${
+                currentSite.themeMode === 'dark'
+                  ? 'bg-gray-800 text-yellow-300 shadow-sm'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+              title="Dark mode"
+            >
+              <HiOutlineMoon className="w-3.5 h-3.5" />
+            </button>
+          </div>
+
+          {/* Language Selector */}
+          <div className="flex items-center bg-gray-100 rounded-lg p-0.5">
+            <button
+              onClick={() => handleLanguageChange('bn')}
+              className={`px-2 py-1 text-xs font-medium rounded-md transition-all ${
+                (currentSite.language ?? 'bn') === 'bn'
+                  ? 'bg-white text-green-700 shadow-sm'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+              title="Bangla"
+            >
+              {'\u09AC\u09BE\u0982\u09B2\u09BE'}
+            </button>
+            <button
+              onClick={() => handleLanguageChange('en')}
+              className={`px-2 py-1 text-xs font-medium rounded-md transition-all ${
+                currentSite.language === 'en'
+                  ? 'bg-white text-blue-700 shadow-sm'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+              title="English"
+            >
+              EN
+            </button>
+            <button
+              onClick={() => handleLanguageChange('hi')}
+              className={`px-2 py-1 text-xs font-medium rounded-md transition-all ${
+                currentSite.language === 'hi'
+                  ? 'bg-white text-orange-700 shadow-sm'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+              title="Hindi"
+            >
+              {'\u0939\u093F\u0902\u0926\u0940'}
+            </button>
           </div>
 
           {/* SEO */}

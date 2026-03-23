@@ -178,6 +178,8 @@ export const sites = {
         | 'logo'
         | 'favicon'
         | 'isPublished'
+        | 'themeMode'
+        | 'language'
       >
     >
   ): Promise<Site> {
