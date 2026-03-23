@@ -323,53 +323,72 @@ function PreviewSection({
       <div className="border-b border-gray-100 last:border-b-0">
         {section.sectionType === 'hero' && (
           <div
-            className="relative py-20 px-8 text-center"
+            className="relative py-24 px-8 text-center overflow-hidden"
             style={{
               background: c.backgroundImage
-                ? `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(${c.backgroundImage}) center/cover`
-                : `linear-gradient(135deg, ${colorTheme.primary}, ${colorTheme.secondary})`,
+                ? `linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)), url(${c.backgroundImage}) center/cover`
+                : `linear-gradient(135deg, ${colorTheme.primary}ee 0%, ${colorTheme.secondary}dd 50%, ${colorTheme.primary}cc 100%)`,
             }}
           >
-            <h1 className="text-3xl font-bold text-white mb-3">
-              {c.title || 'Hero Title'}
-            </h1>
-            <p className="text-lg text-white/80 mb-6 max-w-xl mx-auto">
-              {c.subtitle || 'Your subtitle goes here'}
-            </p>
-            {c.ctaText && (
-              <span
-                className="inline-block px-6 py-2.5 rounded-lg font-semibold text-sm text-white"
-                style={{ backgroundColor: colorTheme.accent }}
-              >
-                {c.ctaText}
-              </span>
-            )}
+            {/* Decorative blobs */}
+            <div className="absolute top-0 left-0 w-40 h-40 rounded-full opacity-20 animate-blob"
+              style={{ background: colorTheme.secondary, filter: 'blur(60px)' }} />
+            <div className="absolute bottom-0 right-0 w-48 h-48 rounded-full opacity-15 animate-blob"
+              style={{ background: colorTheme.accent, filter: 'blur(70px)', animationDelay: '2s' }} />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full opacity-10 animate-blob"
+              style={{ background: `linear-gradient(${colorTheme.primary}, ${colorTheme.accent})`, filter: 'blur(80px)', animationDelay: '4s' }} />
+            {/* Content */}
+            <div className="relative z-10">
+              <h1 className="text-4xl font-extrabold text-white mb-4 drop-shadow-lg">
+                {c.title || 'Hero Title'}
+              </h1>
+              <p className="text-lg text-white/85 mb-8 max-w-xl mx-auto">
+                {c.subtitle || 'Your subtitle goes here'}
+              </p>
+              {c.ctaText && (
+                <span
+                  className="inline-block px-8 py-3 rounded-full font-bold text-sm shadow-lg transition-transform hover:scale-105"
+                  style={{
+                    background: `linear-gradient(135deg, ${colorTheme.accent}, ${colorTheme.accent}dd)`,
+                    color: '#fff',
+                    boxShadow: `0 8px 25px ${colorTheme.accent}44`,
+                  }}
+                >
+                  {c.ctaText}
+                </span>
+              )}
+            </div>
+            {/* Wave divider */}
+            <svg className="absolute bottom-0 left-0 w-full" viewBox="0 0 1440 60" preserveAspectRatio="none" style={{ height: '30px' }}>
+              <path d="M0,40 C360,0 720,60 1080,20 C1260,0 1380,40 1440,30 L1440,60 L0,60 Z" fill={colorTheme.background || '#fff'} />
+            </svg>
           </div>
         )}
 
         {section.sectionType === 'about' && (
-          <div className="py-12 px-8">
+          <div className="py-14 px-8" style={{ backgroundColor: colorTheme.background }}>
             <h2
               className="text-2xl font-bold mb-4 text-center"
               style={{ color: colorTheme.primary }}
             >
               {c.title || 'About Us'}
             </h2>
-            <p className="text-gray-600 text-center max-w-2xl mx-auto text-sm leading-relaxed">
+            <div className="w-16 h-1 mx-auto rounded-full mb-6" style={{ background: `linear-gradient(90deg, ${colorTheme.primary}, ${colorTheme.accent})` }} />
+            <p className="text-center max-w-2xl mx-auto text-sm leading-relaxed" style={{ color: `${colorTheme.text}aa` }}>
               {c.description || 'Tell your story here...'}
             </p>
             {(c.mission || c.vision) && (
               <div className="grid grid-cols-2 gap-6 mt-8 max-w-2xl mx-auto">
                 {c.mission && (
-                  <div className="bg-gray-50 rounded-lg p-4">
-                    <h3 className="font-semibold text-sm mb-1" style={{ color: colorTheme.primary }}>Mission</h3>
-                    <p className="text-xs text-gray-600">{c.mission}</p>
+                  <div className="rounded-xl p-5 border-l-4" style={{ backgroundColor: `${colorTheme.primary}08`, borderColor: colorTheme.primary }}>
+                    <h3 className="font-bold text-sm mb-1.5" style={{ color: colorTheme.accent }}>Mission</h3>
+                    <p className="text-xs leading-relaxed" style={{ color: `${colorTheme.text}99` }}>{c.mission}</p>
                   </div>
                 )}
                 {c.vision && (
-                  <div className="bg-gray-50 rounded-lg p-4">
-                    <h3 className="font-semibold text-sm mb-1" style={{ color: colorTheme.primary }}>Vision</h3>
-                    <p className="text-xs text-gray-600">{c.vision}</p>
+                  <div className="rounded-xl p-5 border-l-4" style={{ backgroundColor: `${colorTheme.accent}08`, borderColor: colorTheme.accent }}>
+                    <h3 className="font-bold text-sm mb-1.5" style={{ color: colorTheme.primary }}>Vision</h3>
+                    <p className="text-xs leading-relaxed" style={{ color: `${colorTheme.text}99` }}>{c.vision}</p>
                   </div>
                 )}
               </div>
