@@ -40,44 +40,91 @@ export default function HeroVariant3({ content, colorTheme }: SectionProps) {
       {/* Dark overlay */}
       <div className="absolute inset-0 bg-black/60" />
 
-      {/* Animated line pattern */}
+      {/* Animated grid line pattern */}
       <div
-        className="absolute inset-0 opacity-5"
+        className="absolute inset-0 opacity-[0.07]"
         style={{
           backgroundImage: `repeating-linear-gradient(0deg, transparent, transparent 50px, ${colorTheme.primary}40 50px, ${colorTheme.primary}40 51px), repeating-linear-gradient(90deg, transparent, transparent 50px, ${colorTheme.primary}40 50px, ${colorTheme.primary}40 51px)`,
         }}
       />
 
-      {/* Glow effects */}
+      {/* Enhanced pulsing glow effects */}
       <div
-        className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full blur-3xl opacity-20"
+        className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full blur-3xl opacity-20 animate-pulse-glow"
         style={{ backgroundColor: colorTheme.primary }}
       />
       <div
-        className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full blur-3xl opacity-15"
-        style={{ backgroundColor: colorTheme.accent }}
+        className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full blur-3xl opacity-15 animate-pulse-glow"
+        style={{ backgroundColor: colorTheme.accent, animationDelay: '1.5s' }}
       />
+
+      {/* Floating geometric shapes */}
+      {/* Triangle */}
+      <div
+        className="absolute animate-float opacity-10"
+        style={{ top: '15%', left: '8%', animationDelay: '0s' }}
+      >
+        <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
+          <path d="M30 5L55 50H5L30 5Z" stroke={colorTheme.accent} strokeWidth="2" />
+        </svg>
+      </div>
+      {/* Circle */}
+      <div
+        className="absolute animate-float-slow opacity-10"
+        style={{ top: '20%', right: '12%', animationDelay: '2s' }}
+      >
+        <svg width="50" height="50" viewBox="0 0 50 50" fill="none">
+          <circle cx="25" cy="25" r="22" stroke={colorTheme.primary} strokeWidth="2" />
+        </svg>
+      </div>
+      {/* Hexagon */}
+      <div
+        className="absolute animate-float opacity-10"
+        style={{ bottom: '20%', left: '15%', animationDelay: '4s' }}
+      >
+        <svg width="55" height="55" viewBox="0 0 55 55" fill="none">
+          <path d="M27.5 2L50 15.5V42L27.5 53L5 42V15.5L27.5 2Z" stroke={colorTheme.accent} strokeWidth="2" />
+        </svg>
+      </div>
+      {/* Small circle */}
+      <div
+        className="absolute animate-float opacity-15"
+        style={{ top: '60%', right: '8%', animationDelay: '1s' }}
+      >
+        <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
+          <circle cx="15" cy="15" r="12" stroke={colorTheme.primary} strokeWidth="1.5" />
+        </svg>
+      </div>
+      {/* Triangle small */}
+      <div
+        className="absolute animate-float-slow opacity-10"
+        style={{ bottom: '35%', right: '25%', animationDelay: '3s' }}
+      >
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+          <path d="M20 5L35 35H5L20 5Z" stroke={colorTheme.secondary} strokeWidth="1.5" />
+        </svg>
+      </div>
 
       {/* Content */}
       <div className="relative z-10 max-w-5xl mx-auto px-6 py-20 text-center">
         <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black leading-none mb-8 tracking-tight">
           {c.title.split(" ").map((word: string, i: number) => (
             <span key={i} className="inline-block mr-4 mb-2">
-              <span
-                className="relative"
-                style={{ color: "#ffffff" }}
-              >
-                {word}
-                {i === 0 && (
-                  <span
-                    className="absolute bottom-0 left-0 w-full h-1.5 rounded-full"
-                    style={{
-                      backgroundColor: colorTheme.accent,
-                      animation: "heroUnderline 2s ease-in-out infinite alternate",
-                    }}
-                  />
-                )}
-              </span>
+              {i % 2 === 0 ? (
+                <span
+                  className="bg-clip-text text-transparent animate-gradient"
+                  style={{
+                    backgroundImage: `linear-gradient(135deg, ${colorTheme.accent}, ${colorTheme.primary}, ${colorTheme.accent})`,
+                    backgroundSize: '200% 200%',
+                  }}
+                >
+                  {word}
+                </span>
+              ) : (
+                <span style={{ color: "#ffffff" }}>
+                  {word}
+                </span>
+              )}
             </span>
           ))}
         </h1>
@@ -91,7 +138,7 @@ export default function HeroVariant3({ content, colorTheme }: SectionProps) {
 
         <a
           href={c.ctaLink}
-          className="group inline-flex items-center gap-3 px-10 py-5 rounded-2xl text-xl font-bold transition-all duration-500 hover:scale-105 hover:gap-5"
+          className="group inline-flex items-center gap-3 px-10 py-5 rounded-2xl text-xl font-bold transition-all duration-500 hover:scale-105 hover:gap-5 animate-pulse-glow"
           style={{
             background: `linear-gradient(135deg, ${colorTheme.primary}, ${colorTheme.accent})`,
             color: "#ffffff",
@@ -114,33 +161,19 @@ export default function HeroVariant3({ content, colorTheme }: SectionProps) {
           </svg>
         </a>
 
-        {/* Scroll indicator */}
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2">
+        {/* Scroll indicator with animate-scroll */}
+        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-scroll">
           <div
             className="w-6 h-10 rounded-full border-2 flex justify-center pt-2"
             style={{ borderColor: "rgba(255,255,255,0.3)" }}
           >
             <div
               className="w-1.5 h-3 rounded-full"
-              style={{
-                backgroundColor: colorTheme.accent,
-                animation: "heroScroll 1.5s ease-in-out infinite",
-              }}
+              style={{ backgroundColor: colorTheme.accent }}
             />
           </div>
         </div>
       </div>
-
-      <style jsx>{`
-        @keyframes heroUnderline {
-          0% { width: 0%; opacity: 0; }
-          100% { width: 100%; opacity: 1; }
-        }
-        @keyframes heroScroll {
-          0% { transform: translateY(0); opacity: 1; }
-          100% { transform: translateY(12px); opacity: 0; }
-        }
-      `}</style>
     </section>
   );
 }

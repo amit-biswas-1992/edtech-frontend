@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import { useAppStore } from '@/lib/store';
 
 export default function Providers({ children }: { children: React.ReactNode }) {
@@ -10,5 +11,9 @@ export default function Providers({ children }: { children: React.ReactNode }) {
     initAuth();
   }, [initAuth]);
 
-  return <>{children}</>;
+  return (
+    <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || 'placeholder'}>
+      {children}
+    </GoogleOAuthProvider>
+  );
 }

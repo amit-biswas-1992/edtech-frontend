@@ -100,6 +100,27 @@ export const auth = {
       body: JSON.stringify({ email, password }),
     });
   },
+
+  googleLogin(idToken: string): Promise<AuthResponse> {
+    return request<AuthResponse>('/auth/google', {
+      method: 'POST',
+      body: JSON.stringify({ idToken }),
+    });
+  },
+
+  phoneRegister(name: string, phone: string, pin: string): Promise<AuthResponse> {
+    return request<AuthResponse>('/auth/phone/register', {
+      method: 'POST',
+      body: JSON.stringify({ name, phone, pin }),
+    });
+  },
+
+  phoneLogin(phone: string, pin: string): Promise<AuthResponse> {
+    return request<AuthResponse>('/auth/phone/login', {
+      method: 'POST',
+      body: JSON.stringify({ phone, pin }),
+    });
+  },
 };
 
 // Templates API

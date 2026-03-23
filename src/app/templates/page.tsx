@@ -25,6 +25,8 @@ const categoryLabels: Record<string, string> = {
   premium: 'Premium',
 };
 
+type FilterCategory = 'all' | 'admission' | 'landing' | 'coaching' | 'premium';
+
 function slugify(text: string): string {
   return text
     .toLowerCase()
@@ -34,7 +36,6 @@ function slugify(text: string): string {
 
 export default function TemplatesPage() {
   const router = useRouter();
-  const user = useAppStore((s) => s.user);
   const token = useAppStore((s) => s.token);
   const [templates, setTemplates] = useState<Template[]>([]);
   const [loading, setLoading] = useState(true);
@@ -42,6 +43,7 @@ export default function TemplatesPage() {
   const [siteName, setSiteName] = useState('');
   const [creating, setCreating] = useState(false);
   const [hydrated, setHydrated] = useState(false);
+  const [activeFilter, setActiveFilter] = useState<FilterCategory>('all');
 
   useEffect(() => {
     setHydrated(true);
@@ -90,6 +92,18 @@ export default function TemplatesPage() {
     }
   }
 
+  const filteredTemplates = activeFilter === 'all'
+    ? templates
+    : templates.filter((t) => t.category === activeFilter);
+
+  const filters: { key: FilterCategory; label: string }[] = [
+    { key: 'all', label: 'All' },
+    { key: 'admission', label: 'Admission' },
+    { key: 'landing', label: 'Landing' },
+    { key: 'coaching', label: 'Coaching' },
+    { key: 'premium', label: 'Premium' },
+  ];
+
   if (!hydrated || !token) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -103,32 +117,55 @@ export default function TemplatesPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-              <span className="text-2xl">&#127891;</span>
-              <span className="text-xl font-bold text-gray-900">EdTech Site Builder</span>
-            </Link>
-          </div>
-          <Link href="/">
-            <Button variant="secondary" size="sm">
-              Back to Dashboard
-            </Button>
-          </Link>
-        </div>
-      </header>
+      {/* Gradient mesh header */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-indigo-700 to-purple-800">
+        {/* Decorative blobs */}
+        <div className="absolute w-96 h-96 bg-blue-400/20 rounded-full blur-3xl -top-20 -left-20" />
+        <div className="absolute w-80 h-80 bg-purple-400/20 rounded-full blur-3xl -bottom-20 -right-10" />
 
-      <main className="max-w-7xl mx-auto px-6 py-12">
-        <div className="text-center mb-12">
-          <h1 className="text-3xl font-bold text-gray-900 mb-3">
-            Choose a Template
-          </h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Pick a starting point for your coaching website. Each template comes
-            with pre-built sections that you can customize to match your brand.
-          </p>
+        <div className="relative z-10">
+          {/* Nav */}
+          <header className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+              <span className="text-2xl">{'\u{1F393}'}</span>
+              <span className="text-xl font-bold text-white">EdTech Site Builder</span>
+            </Link>
+            <Link href="/">
+              <Button variant="secondary" size="sm" className="!rounded-full">
+                Back to Dashboard
+              </Button>
+            </Link>
+          </header>
+
+          {/* Title */}
+          <div className="text-center px-6 pt-8 pb-16">
+            <h1 className="text-3xl md:text-4xl font-bold text-white mb-3">
+              Choose a Template
+            </h1>
+            <p className="text-lg text-blue-100 max-w-2xl mx-auto">
+              Pick a starting point for your coaching website. Each template comes
+              with pre-built sections that you can customize to match your brand.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <main className="max-w-7xl mx-auto px-6 -mt-6 pb-12">
+        {/* Category filter pills */}
+        <div className="flex flex-wrap justify-center gap-2 mb-10">
+          {filters.map((filter) => (
+            <button
+              key={filter.key}
+              onClick={() => setActiveFilter(filter.key)}
+              className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                activeFilter === filter.key
+                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30'
+                  : 'bg-white text-gray-600 border border-gray-200 hover:border-blue-300 hover:text-blue-600 shadow-sm'
+              }`}
+            >
+              {filter.label}
+            </button>
+          ))}
         </div>
 
         {loading ? (
@@ -141,36 +178,41 @@ export default function TemplatesPage() {
               <span className="text-gray-500 text-sm">Loading templates...</span>
             </div>
           </div>
-        ) : templates.length === 0 ? (
+        ) : filteredTemplates.length === 0 ? (
           <div className="text-center py-24 bg-white rounded-2xl border border-gray-200">
-            <div className="text-5xl mb-4">&#128230;</div>
+            <div className="text-5xl mb-4">{'\u{1F4E6}'}</div>
             <h3 className="text-xl font-semibold text-gray-900 mb-2">No templates available</h3>
             <p className="text-gray-600">Templates will appear here once they are added by the admin.</p>
           </div>
         ) : (
           <div className="grid sm:grid-cols-2 lg:grid-cols-2 gap-8">
-            {templates.map((template) => (
+            {filteredTemplates.map((template, i) => (
               <div
                 key={template.id}
-                className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-xl hover:border-gray-300 transition-all duration-300 group"
+                className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-2xl hover:border-blue-200 hover:scale-[1.02] transition-all duration-500 group animate-fade-in-up"
+                style={{ animationDelay: `${i * 0.1}s` }}
               >
-                {/* Template preview */}
-                <div
-                  className={`h-48 bg-gradient-to-br ${categoryGradients[template.category] || 'from-gray-400 to-gray-600'} relative overflow-hidden`}
-                >
+                {/* Template preview - gradient mesh */}
+                <div className="h-48 relative overflow-hidden">
+                  <div className={`absolute inset-0 bg-gradient-to-br ${categoryGradients[template.category] || 'from-gray-400 to-gray-600'}`} />
+                  {/* Mesh elements */}
+                  <div className="absolute w-40 h-40 bg-white/10 rounded-full -top-10 -right-10 group-hover:scale-125 transition-transform duration-700" />
+                  <div className="absolute w-32 h-32 bg-white/10 rounded-full -bottom-8 -left-8 group-hover:scale-125 transition-transform duration-700" />
+
                   <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
                     <div className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300">
                       <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                       </svg>
                     </div>
-                    <span className="text-sm text-white/70">
+                    <span className="text-sm text-white/70 bg-black/20 backdrop-blur-sm px-3 py-1 rounded-full">
                       {template.defaultSections?.length || 0} sections included
                     </span>
                   </div>
+
                   {/* Category badge */}
                   <div className="absolute top-4 left-4">
-                    <span className="px-3 py-1 rounded-full text-xs font-semibold bg-white/20 backdrop-blur-sm text-white border border-white/20">
+                    <span className={`px-3 py-1 rounded-full text-xs font-semibold bg-gradient-to-r ${categoryGradients[template.category] || 'from-gray-400 to-gray-600'} text-white shadow-lg`}>
                       {categoryLabels[template.category] || template.category}
                     </span>
                   </div>
@@ -184,16 +226,15 @@ export default function TemplatesPage() {
                   <p className="text-gray-600 text-sm leading-relaxed mb-5 line-clamp-2">
                     {template.description}
                   </p>
-                  <Button
-                    size="md"
-                    className="w-full"
+                  <button
                     onClick={() => {
                       setSelectedTemplate(template);
                       setSiteName('');
                     }}
+                    className="w-full py-2.5 rounded-xl text-white font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-lg shadow-blue-600/25 hover:shadow-blue-600/40"
                   >
                     Use This Template
-                  </Button>
+                  </button>
                 </div>
               </div>
             ))}

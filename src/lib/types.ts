@@ -3,6 +3,9 @@ export interface User {
   name: string;
   email: string;
   role: string;
+  phone?: string;
+  avatar?: string | null;
+  authProvider?: 'local' | 'google' | 'phone';
 }
 
 export interface ColorTheme {
