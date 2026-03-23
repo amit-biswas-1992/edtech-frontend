@@ -399,7 +399,7 @@ function Dashboard() {
                   />
                   <div
                     className="absolute w-40 h-40 rounded-full opacity-20 -top-10 -right-10"
-                    style={{ backgroundColor: site.colorTheme?.accent || '#F59E0B' }}
+                    style={{ backgroundColor: site.colorTheme?.accent || '#38BDF8' }}
                   />
                   <div
                     className="absolute w-32 h-32 rounded-full opacity-15 -bottom-8 -left-8"

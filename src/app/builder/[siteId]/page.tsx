@@ -117,7 +117,7 @@ export default function BuilderPage() {
     return currentSite?.colorTheme ?? {
       primary: '#3B82F6',
       secondary: '#6366F1',
-      accent: '#F59E0B',
+      accent: '#38BDF8',
       background: '#FFFFFF',
       text: '#1F2937',
       name: 'Default',

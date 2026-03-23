@@ -27,7 +27,7 @@ export default function ColorPicker({ onClose }: ColorPickerProps) {
     name: 'Custom',
     primary: currentSite?.colorTheme.primary ?? '#2563EB',
     secondary: currentSite?.colorTheme.secondary ?? '#1E40AF',
-    accent: currentSite?.colorTheme.accent ?? '#F59E0B',
+    accent: currentSite?.colorTheme.accent ?? '#38BDF8',
     background: currentSite?.colorTheme.background ?? '#FFFFFF',
     text: currentSite?.colorTheme.text ?? '#1F2937',
   }));
