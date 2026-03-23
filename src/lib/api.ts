@@ -154,7 +154,6 @@ export const sites = {
 
   createSite(data: {
     name: string;
-    slug: string;
     templateId: string;
     colorTheme?: Site['colorTheme'];
   }): Promise<Site> {

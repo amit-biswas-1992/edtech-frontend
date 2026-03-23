@@ -80,7 +80,6 @@ export default function TemplatesPage() {
     try {
       const site = await sitesApi.createSite({
         name: siteName.trim(),
-        slug: slugify(siteName.trim()),
         templateId: selectedTemplate.id,
       });
       toast.success('Site created!');
