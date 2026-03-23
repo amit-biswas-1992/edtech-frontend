@@ -1,6 +1,6 @@
 'use client';
 
-import { Course, Promo, Site, SiteSection, SectionType, Teacher } from '@/lib/types';
+import { Course, Notice, Promo, Result, ResultStats, Schedule, Site, SiteSection, SectionType, Teacher } from '@/lib/types';
 import HeroSection from '@/components/sections/hero';
 import AboutSection from '@/components/sections/about';
 import CoursesSection from '@/components/sections/courses';
@@ -16,6 +16,11 @@ import PricingSection from '@/components/sections/pricing';
 import CtaSection from '@/components/sections/cta';
 import StatsSection from '@/components/sections/stats';
 import GallerySection from '@/components/sections/gallery';
+import NoticeBoard from '@/components/preview/NoticeBoard';
+import ScheduleView from '@/components/preview/ScheduleView';
+import ResultShowcase from '@/components/preview/ResultShowcase';
+import EnrollmentForm from '@/components/preview/EnrollmentForm';
+import FloatingChatWidget from '@/components/preview/FloatingChatWidget';
 
 const sectionComponents: Record<SectionType, React.ComponentType<any>> = {
   hero: HeroSection,
@@ -40,12 +45,31 @@ interface SiteRendererProps {
   courses?: Course[];
   teachers?: Teacher[];
   promos?: Promo[];
+  schedules?: Schedule[];
+  results?: Result[];
+  resultStats?: ResultStats | null;
+  notices?: Notice[];
 }
 
-export default function SiteRenderer({ site, courses = [], teachers = [], promos = [] }: SiteRendererProps) {
+export default function SiteRenderer({
+  site,
+  courses = [],
+  teachers = [],
+  promos = [],
+  schedules = [],
+  results = [],
+  resultStats = null,
+  notices = [],
+}: SiteRendererProps) {
   const visibleSections = site.sections
     .filter((s: SiteSection) => s.isVisible)
     .sort((a: SiteSection, b: SiteSection) => a.order - b.order);
+
+  const publishedNotices = notices.filter((n) => n.isPublished);
+  const activeSchedules = schedules.filter((s) => s.isActive);
+  const showChatWidget = site.chatConfig &&
+    ((site.chatConfig.showWhatsapp && site.chatConfig.whatsappNumber) ||
+     (site.chatConfig.showMessenger && site.chatConfig.messengerPageId));
 
   return (
     <div
@@ -81,6 +105,27 @@ export default function SiteRenderer({ site, courses = [], teachers = [], promos
           />
         );
       })}
+
+      {/* New Sections - After existing sections */}
+      {publishedNotices.length > 0 && (
+        <NoticeBoard notices={publishedNotices} colorTheme={site.colorTheme} />
+      )}
+
+      {activeSchedules.length > 0 && (
+        <ScheduleView schedules={activeSchedules} colorTheme={site.colorTheme} />
+      )}
+
+      {results.length > 0 && (
+        <ResultShowcase results={results} resultStats={resultStats} colorTheme={site.colorTheme} />
+      )}
+
+      {/* Enrollment form is always shown - this is the conversion point */}
+      <EnrollmentForm siteId={site.id} courses={courses} colorTheme={site.colorTheme} />
+
+      {/* Floating Chat Widget */}
+      {showChatWidget && site.chatConfig && (
+        <FloatingChatWidget chatConfig={site.chatConfig} />
+      )}
     </div>
   );
 }

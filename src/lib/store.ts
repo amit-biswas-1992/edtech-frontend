@@ -1,7 +1,7 @@
 import { create } from 'zustand';
-import { Course, Promo, Site, SiteSection, Teacher, User } from './types';
+import { Course, Enrollment, EnrollmentStats, Notice, Promo, Result, ResultStats, Schedule, Site, SiteSection, Teacher, User } from './types';
 
-export type BuilderTab = 'sections' | 'courses' | 'teachers' | 'promos';
+export type BuilderTab = 'sections' | 'courses' | 'teachers' | 'promos' | 'enrollments' | 'schedules' | 'results' | 'notices';
 
 interface AppState {
   user: User | null;
@@ -13,6 +13,12 @@ interface AppState {
   courses: Course[];
   teachers: Teacher[];
   promos: Promo[];
+  enrollments: Enrollment[];
+  enrollmentStats: EnrollmentStats | null;
+  schedules: Schedule[];
+  results: Result[];
+  resultStats: ResultStats | null;
+  notices: Notice[];
 
   login: (token: string, user: User) => void;
   logout: () => void;
@@ -25,6 +31,12 @@ interface AppState {
   setCourses: (courses: Course[]) => void;
   setTeachers: (teachers: Teacher[]) => void;
   setPromos: (promos: Promo[]) => void;
+  setEnrollments: (enrollments: Enrollment[]) => void;
+  setEnrollmentStats: (stats: EnrollmentStats | null) => void;
+  setSchedules: (schedules: Schedule[]) => void;
+  setResults: (results: Result[]) => void;
+  setResultStats: (stats: ResultStats | null) => void;
+  setNotices: (notices: Notice[]) => void;
   initAuth: () => void;
 }
 
@@ -38,6 +50,12 @@ export const useAppStore = create<AppState>((set) => ({
   courses: [],
   teachers: [],
   promos: [],
+  enrollments: [],
+  enrollmentStats: null,
+  schedules: [],
+  results: [],
+  resultStats: null,
+  notices: [],
 
   login: (token: string, user: User) => {
     localStorage.setItem('token', token);
@@ -93,6 +111,30 @@ export const useAppStore = create<AppState>((set) => ({
 
   setPromos: (promos: Promo[]) => {
     set({ promos });
+  },
+
+  setEnrollments: (enrollments: Enrollment[]) => {
+    set({ enrollments });
+  },
+
+  setEnrollmentStats: (stats: EnrollmentStats | null) => {
+    set({ enrollmentStats: stats });
+  },
+
+  setSchedules: (schedules: Schedule[]) => {
+    set({ schedules });
+  },
+
+  setResults: (results: Result[]) => {
+    set({ results });
+  },
+
+  setResultStats: (stats: ResultStats | null) => {
+    set({ resultStats: stats });
+  },
+
+  setNotices: (notices: Notice[]) => {
+    set({ notices });
   },
 
   initAuth: () => {

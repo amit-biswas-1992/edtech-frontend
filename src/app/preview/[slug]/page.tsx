@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import SiteRenderer from '@/components/preview/SiteRenderer';
-import { Course, Promo, Site, Teacher } from '@/lib/types';
+import { Course, Notice, Promo, Result, ResultStats, Schedule, Site, Teacher } from '@/lib/types';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -45,6 +45,46 @@ async function getTeachers(siteId: string): Promise<Teacher[]> {
 async function getPromos(siteId: string): Promise<Promo[]> {
   try {
     const res = await fetch(`${API}/sites/${siteId}/promos?active=true`, { cache: 'no-store' });
+    if (!res.ok) return [];
+    return res.json();
+  } catch {
+    return [];
+  }
+}
+
+async function getSchedules(siteId: string): Promise<Schedule[]> {
+  try {
+    const res = await fetch(`${API}/sites/${siteId}/schedules`, { cache: 'no-store' });
+    if (!res.ok) return [];
+    return res.json();
+  } catch {
+    return [];
+  }
+}
+
+async function getResults(siteId: string): Promise<Result[]> {
+  try {
+    const res = await fetch(`${API}/sites/${siteId}/results`, { cache: 'no-store' });
+    if (!res.ok) return [];
+    return res.json();
+  } catch {
+    return [];
+  }
+}
+
+async function getResultStats(siteId: string): Promise<ResultStats | null> {
+  try {
+    const res = await fetch(`${API}/sites/${siteId}/results/stats`, { cache: 'no-store' });
+    if (!res.ok) return null;
+    return res.json();
+  } catch {
+    return null;
+  }
+}
+
+async function getNotices(siteId: string): Promise<Notice[]> {
+  try {
+    const res = await fetch(`${API}/sites/${siteId}/notices`, { cache: 'no-store' });
     if (!res.ok) return [];
     return res.json();
   } catch {
@@ -100,10 +140,14 @@ export default async function PreviewPage({ params }: Props) {
   }
 
   // Fetch dynamic data in parallel
-  const [coursesData, teachersData, promosData] = await Promise.all([
+  const [coursesData, teachersData, promosData, schedulesData, resultsData, resultStatsData, noticesData] = await Promise.all([
     getCourses(site.id),
     getTeachers(site.id),
     getPromos(site.id),
+    getSchedules(site.id),
+    getResults(site.id),
+    getResultStats(site.id),
+    getNotices(site.id),
   ]);
 
   const jsonLd = {
@@ -125,6 +169,10 @@ export default async function PreviewPage({ params }: Props) {
         courses={coursesData}
         teachers={teachersData}
         promos={promosData}
+        schedules={schedulesData}
+        results={resultsData}
+        resultStats={resultStatsData}
+        notices={noticesData}
       />
     </>
   );

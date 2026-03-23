@@ -47,6 +47,7 @@ export interface Site {
   courses?: Course[];
   teachers?: Teacher[];
   promos?: Promo[];
+  chatConfig: ChatConfig | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -150,4 +151,121 @@ export interface Promo {
   applicableCourseIds: string[] | null;
   createdAt: string;
   updatedAt: string;
+}
+
+// Enrollment Management
+export type EnrollmentStatus = 'pending' | 'confirmed' | 'waitlisted' | 'cancelled';
+export type PaymentStatus = 'unpaid' | 'partial' | 'paid';
+
+export interface Enrollment {
+  id: string;
+  siteId: string;
+  courseId: string | null;
+  studentName: string;
+  studentPhone: string;
+  guardianPhone: string | null;
+  email: string | null;
+  institution: string | null;
+  sscRoll: string | null;
+  hscRoll: string | null;
+  targetUniversity: string | null;
+  batchPreference: string | null;
+  status: EnrollmentStatus;
+  paymentStatus: PaymentStatus;
+  paymentMethod: string | null;
+  transactionId: string | null;
+  amount: number | null;
+  notes: string | null;
+  course?: Course;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface EnrollmentStats {
+  total: number;
+  pending: number;
+  confirmed: number;
+  waitlisted: number;
+  cancelled: number;
+  totalRevenue: number;
+}
+
+// Schedule Management
+export type DayOfWeek = 'saturday' | 'sunday' | 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday';
+
+export interface Schedule {
+  id: string;
+  siteId: string;
+  courseId: string | null;
+  title: string;
+  titleBn: string | null;
+  dayOfWeek: DayOfWeek;
+  startTime: string;
+  endTime: string;
+  teacherId: string | null;
+  room: string | null;
+  meetingLink: string | null;
+  batchName: string | null;
+  isActive: boolean;
+  teacher?: Teacher;
+  course?: Course;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Result Management
+export interface Result {
+  id: string;
+  siteId: string;
+  studentName: string;
+  studentNameBn: string | null;
+  photo: string | null;
+  university: string;
+  universityBn: string | null;
+  department: string | null;
+  admissionYear: number;
+  meritPosition: number | null;
+  coachingBatch: string | null;
+  previousInstitution: string | null;
+  testimonial: string | null;
+  isVerified: boolean;
+  isFeatured: boolean;
+  order: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ResultStats {
+  totalAdmitted: number;
+  byUniversity: { name: string; count: number }[];
+  byYear: { year: number; count: number }[];
+  featuredCount: number;
+}
+
+// Notice Management
+export type NoticeType = 'general' | 'exam' | 'schedule' | 'admission' | 'result' | 'urgent';
+
+export interface Notice {
+  id: string;
+  siteId: string;
+  title: string;
+  titleBn: string | null;
+  content: string;
+  contentBn: string | null;
+  type: NoticeType;
+  isPinned: boolean;
+  isPublished: boolean;
+  publishDate: string;
+  expiryDate: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Chat Config
+export interface ChatConfig {
+  whatsappNumber: string;
+  whatsappMessage: string;
+  messengerPageId: string;
+  showWhatsapp: boolean;
+  showMessenger: boolean;
 }

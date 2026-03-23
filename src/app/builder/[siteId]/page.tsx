@@ -24,6 +24,12 @@ export default function BuilderPage() {
   const setCourses = useAppStore((s) => s.setCourses);
   const setTeachers = useAppStore((s) => s.setTeachers);
   const setPromos = useAppStore((s) => s.setPromos);
+  const setEnrollments = useAppStore((s) => s.setEnrollments);
+  const setEnrollmentStats = useAppStore((s) => s.setEnrollmentStats);
+  const setSchedules = useAppStore((s) => s.setSchedules);
+  const setResults = useAppStore((s) => s.setResults);
+  const setResultStats = useAppStore((s) => s.setResultStats);
+  const setNotices = useAppStore((s) => s.setNotices);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -52,19 +58,31 @@ export default function BuilderPage() {
       api.courses.getCourses(siteId).catch(() => []),
       api.teachers.getTeachers(siteId).catch(() => []),
       api.promos.getPromos(siteId).catch(() => []),
+      api.enrollments.getEnrollments(siteId).catch(() => []),
+      api.enrollments.getEnrollmentStats(siteId).catch(() => null),
+      api.schedules.getSchedules(siteId).catch(() => []),
+      api.results.getResults(siteId).catch(() => []),
+      api.results.getResultStats(siteId).catch(() => null),
+      api.notices.getNotices(siteId).catch(() => []),
     ])
-      .then(([site, coursesData, teachersData, promosData]) => {
+      .then(([site, coursesData, teachersData, promosData, enrollmentsData, enrollmentStatsData, schedulesData, resultsData, resultStatsData, noticesData]) => {
         setCurrentSite(site);
         setCourses(coursesData);
         setTeachers(teachersData);
         setPromos(promosData);
+        setEnrollments(enrollmentsData);
+        setEnrollmentStats(enrollmentStatsData);
+        setSchedules(schedulesData);
+        setResults(resultsData);
+        setResultStats(resultStatsData);
+        setNotices(noticesData);
         setLoading(false);
       })
       .catch((err) => {
         setError(err.message || 'Failed to load site');
         setLoading(false);
       });
-  }, [siteId, setCurrentSite, setCourses, setTeachers, setPromos]);
+  }, [siteId, setCurrentSite, setCourses, setTeachers, setPromos, setEnrollments, setEnrollmentStats, setSchedules, setResults, setResultStats, setNotices]);
 
   // Cleanup on unmount
   useEffect(() => {

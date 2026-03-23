@@ -1,4 +1,7 @@
-import { AuthResponse, Course, Promo, Site, SiteSection, Teacher, Template, User } from './types';
+import {
+  AuthResponse, Course, Enrollment, EnrollmentStats, Notice, Promo,
+  Result, ResultStats, Schedule, Site, SiteSection, Teacher, Template, User,
+} from './types';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
@@ -20,6 +23,41 @@ async function request<T>(
   if (token) {
     headers['Authorization'] = `Bearer ${token}`;
   }
+
+  try {
+    const response = await fetch(`${BASE_URL}${endpoint}`, {
+      ...options,
+      headers,
+    });
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({
+        message: response.statusText,
+      }));
+      throw new Error(error.message || `Request failed with status ${response.status}`);
+    }
+
+    if (response.status === 204) {
+      return undefined as T;
+    }
+
+    return response.json();
+  } catch (error) {
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error('An unexpected error occurred');
+  }
+}
+
+async function publicRequest<T>(
+  endpoint: string,
+  options: RequestInit = {}
+): Promise<T> {
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    ...(options.headers as Record<string, string>),
+  };
 
   try {
     const response = await fetch(`${BASE_URL}${endpoint}`, {
@@ -283,6 +321,157 @@ export const promos = {
     return request(`/sites/${siteId}/promos/validate`, {
       method: 'POST',
       body: JSON.stringify({ code }),
+    });
+  },
+};
+
+// Enrollments API
+export const enrollments = {
+  getEnrollments(siteId: string, params?: { status?: string; courseId?: string; search?: string }): Promise<Enrollment[]> {
+    const query = new URLSearchParams();
+    if (params?.status) query.set('status', params.status);
+    if (params?.courseId) query.set('courseId', params.courseId);
+    if (params?.search) query.set('search', params.search);
+    const qs = query.toString();
+    return request<Enrollment[]>(`/sites/${siteId}/enrollments${qs ? `?${qs}` : ''}`);
+  },
+
+  getEnrollmentStats(siteId: string): Promise<EnrollmentStats> {
+    return request<EnrollmentStats>(`/sites/${siteId}/enrollments/stats`);
+  },
+
+  getEnrollment(siteId: string, id: string): Promise<Enrollment> {
+    return request<Enrollment>(`/sites/${siteId}/enrollments/${id}`);
+  },
+
+  createEnrollment(siteId: string, data: Partial<Enrollment>): Promise<Enrollment> {
+    return publicRequest<Enrollment>(`/sites/${siteId}/enrollments`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  updateEnrollment(siteId: string, id: string, data: Partial<Enrollment>): Promise<Enrollment> {
+    return request<Enrollment>(`/sites/${siteId}/enrollments/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+  },
+
+  deleteEnrollment(siteId: string, id: string): Promise<void> {
+    return request<void>(`/sites/${siteId}/enrollments/${id}`, {
+      method: 'DELETE',
+    });
+  },
+};
+
+// Schedules API
+export const schedules = {
+  getSchedules(siteId: string, params?: { dayOfWeek?: string; courseId?: string; batchName?: string }): Promise<Schedule[]> {
+    const query = new URLSearchParams();
+    if (params?.dayOfWeek) query.set('dayOfWeek', params.dayOfWeek);
+    if (params?.courseId) query.set('courseId', params.courseId);
+    if (params?.batchName) query.set('batchName', params.batchName);
+    const qs = query.toString();
+    return request<Schedule[]>(`/sites/${siteId}/schedules${qs ? `?${qs}` : ''}`);
+  },
+
+  getSchedule(siteId: string, id: string): Promise<Schedule> {
+    return request<Schedule>(`/sites/${siteId}/schedules/${id}`);
+  },
+
+  createSchedule(siteId: string, data: Partial<Schedule>): Promise<Schedule> {
+    return request<Schedule>(`/sites/${siteId}/schedules`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  updateSchedule(siteId: string, id: string, data: Partial<Schedule>): Promise<Schedule> {
+    return request<Schedule>(`/sites/${siteId}/schedules/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+  },
+
+  deleteSchedule(siteId: string, id: string): Promise<void> {
+    return request<void>(`/sites/${siteId}/schedules/${id}`, {
+      method: 'DELETE',
+    });
+  },
+};
+
+// Results API
+export const results = {
+  getResults(siteId: string, params?: { university?: string; year?: string; featured?: string }): Promise<Result[]> {
+    const query = new URLSearchParams();
+    if (params?.university) query.set('university', params.university);
+    if (params?.year) query.set('year', params.year);
+    if (params?.featured) query.set('featured', params.featured);
+    const qs = query.toString();
+    return request<Result[]>(`/sites/${siteId}/results${qs ? `?${qs}` : ''}`);
+  },
+
+  getResultStats(siteId: string): Promise<ResultStats> {
+    return request<ResultStats>(`/sites/${siteId}/results/stats`);
+  },
+
+  getResult(siteId: string, id: string): Promise<Result> {
+    return request<Result>(`/sites/${siteId}/results/${id}`);
+  },
+
+  createResult(siteId: string, data: Partial<Result>): Promise<Result> {
+    return request<Result>(`/sites/${siteId}/results`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  updateResult(siteId: string, id: string, data: Partial<Result>): Promise<Result> {
+    return request<Result>(`/sites/${siteId}/results/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+  },
+
+  deleteResult(siteId: string, id: string): Promise<void> {
+    return request<void>(`/sites/${siteId}/results/${id}`, {
+      method: 'DELETE',
+    });
+  },
+};
+
+// Notices API
+export const notices = {
+  getNotices(siteId: string, params?: { type?: string; pinned?: string }): Promise<Notice[]> {
+    const query = new URLSearchParams();
+    if (params?.type) query.set('type', params.type);
+    if (params?.pinned) query.set('pinned', params.pinned);
+    const qs = query.toString();
+    return request<Notice[]>(`/sites/${siteId}/notices${qs ? `?${qs}` : ''}`);
+  },
+
+  getNotice(siteId: string, id: string): Promise<Notice> {
+    return request<Notice>(`/sites/${siteId}/notices/${id}`);
+  },
+
+  createNotice(siteId: string, data: Partial<Notice>): Promise<Notice> {
+    return request<Notice>(`/sites/${siteId}/notices`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  updateNotice(siteId: string, id: string, data: Partial<Notice>): Promise<Notice> {
+    return request<Notice>(`/sites/${siteId}/notices/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+  },
+
+  deleteNotice(siteId: string, id: string): Promise<void> {
+    return request<void>(`/sites/${siteId}/notices/${id}`, {
+      method: 'DELETE',
     });
   },
 };
