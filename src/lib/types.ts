@@ -25,6 +25,7 @@ export type SectionType =
 export interface SiteSection {
   id: string;
   siteId: string;
+  pageId?: string;
   sectionType: SectionType;
   designVariant: number;
   order: number;
@@ -53,6 +54,7 @@ export interface Site {
   chatConfig: ChatConfig | null;
   themeMode?: 'light' | 'dark' | 'system';
   language?: 'en' | 'bn' | 'hi';
+  pages?: SitePage[];
   createdAt: string;
   updatedAt: string;
 }
@@ -273,4 +275,131 @@ export interface ChatConfig {
   messengerPageId: string;
   showWhatsapp: boolean;
   showMessenger: boolean;
+}
+
+// === Multi-Page Builder Types ===
+
+export type PageType =
+  | 'landing' | 'course_details' | 'enrolled_courses' | 'login' | 'signup'
+  | 'checkout' | 'payment_success' | 'payment_fail' | 'exam_details'
+  | 'exam_live' | 'exam_practice' | 'exam_result' | 'exam_leaderboard' | 'custom';
+
+export type BuilderType = 'sections' | 'template';
+
+export interface SitePage {
+  id: string;
+  siteId: string;
+  slug: string;
+  title: string;
+  titleBn: string | null;
+  description: string | null;
+  pageType: PageType;
+  builderType: BuilderType;
+  order: number;
+  isPublished: boolean;
+  isHomepage: boolean;
+  settings: Record<string, any> | null;
+  sections?: SiteSection[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+// === Exam Types ===
+
+export type ExamType = 'live' | 'practice';
+export type QuestionDifficulty = 'easy' | 'medium' | 'hard';
+export type AttemptStatus = 'in_progress' | 'completed' | 'timed_out';
+
+export interface ExamOption {
+  id: string;
+  text: string;
+  textBn?: string;
+  image?: string;
+}
+
+export interface Exam {
+  id: string;
+  siteId: string;
+  courseId: string | null;
+  title: string;
+  titleBn: string | null;
+  description: string | null;
+  type: ExamType;
+  duration: number;
+  totalMarks: number;
+  passMarks: number | null;
+  negativeMarking: number;
+  questionsPerExam: number;
+  shuffleQuestions: boolean;
+  showResult: boolean;
+  startTime: string | null;
+  endTime: string | null;
+  maxAttempts: number | null;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Question {
+  id: string;
+  examId: string;
+  questionText: string;
+  questionTextBn: string | null;
+  questionImage: string | null;
+  options: ExamOption[];
+  correctOptionId?: string;
+  explanation: string | null;
+  explanationBn: string | null;
+  subject: string | null;
+  chapter: string | null;
+  difficulty: QuestionDifficulty;
+  marks: number;
+  order: number;
+}
+
+export interface ExamAttempt {
+  id: string;
+  examId: string;
+  studentId: string;
+  siteId: string;
+  startedAt: string;
+  completedAt: string | null;
+  totalScore: number | null;
+  totalCorrect: number;
+  totalWrong: number;
+  totalSkipped: number;
+  answers: { questionId: string; selectedOptionId: string | null; isCorrect: boolean; timeTaken: number }[];
+  status: AttemptStatus;
+}
+
+export interface LeaderboardEntry {
+  rank: number;
+  studentName: string;
+  totalScore: number;
+  totalCorrect: number;
+  totalWrong: number;
+  timeTaken: number;
+  attemptId: string;
+}
+
+// === Payment Types ===
+
+export type PaymentMethodType = 'bkash' | 'nagad' | 'cash' | 'bank';
+export type PaymentStatusEnum = 'pending' | 'processing' | 'completed' | 'failed' | 'refunded';
+
+export interface Payment {
+  id: string;
+  siteId: string;
+  enrollmentId: string | null;
+  studentId: string;
+  courseId: string | null;
+  amount: number;
+  currency: string;
+  method: PaymentMethodType;
+  transactionId: string | null;
+  providerRef: string | null;
+  status: PaymentStatusEnum;
+  metadata: Record<string, any> | null;
+  createdAt: string;
+  updatedAt: string;
 }
