@@ -1,7 +1,7 @@
 import { create } from 'zustand';
-import { Course, Enrollment, EnrollmentStats, Notice, Promo, Result, ResultStats, Schedule, Site, SiteSection, Teacher, User } from './types';
+import { Course, Enrollment, EnrollmentStats, Exam, Notice, Payment, Promo, Result, ResultStats, Schedule, Site, SitePage, SiteSection, Teacher, User } from './types';
 
-export type BuilderTab = 'sections' | 'courses' | 'teachers' | 'promos' | 'enrollments' | 'schedules' | 'results' | 'notices';
+export type BuilderTab = 'pages' | 'sections' | 'courses' | 'teachers' | 'promos' | 'exams' | 'enrollments' | 'schedules' | 'results' | 'notices' | 'payments';
 
 interface AppState {
   user: User | null;
@@ -19,6 +19,10 @@ interface AppState {
   results: Result[];
   resultStats: ResultStats | null;
   notices: Notice[];
+  pages: SitePage[];
+  selectedPageId: string | null;
+  exams: Exam[];
+  payments: Payment[];
 
   login: (token: string, user: User) => void;
   logout: () => void;
@@ -37,6 +41,10 @@ interface AppState {
   setResults: (results: Result[]) => void;
   setResultStats: (stats: ResultStats | null) => void;
   setNotices: (notices: Notice[]) => void;
+  setPages: (pages: SitePage[]) => void;
+  selectPage: (pageId: string | null) => void;
+  setExams: (exams: Exam[]) => void;
+  setPayments: (payments: Payment[]) => void;
   initAuth: () => void;
 }
 
@@ -56,6 +64,10 @@ export const useAppStore = create<AppState>((set) => ({
   results: [],
   resultStats: null,
   notices: [],
+  pages: [],
+  selectedPageId: null,
+  exams: [],
+  payments: [],
 
   login: (token: string, user: User) => {
     localStorage.setItem('token', token);
@@ -135,6 +147,22 @@ export const useAppStore = create<AppState>((set) => ({
 
   setNotices: (notices: Notice[]) => {
     set({ notices });
+  },
+
+  setPages: (pages: SitePage[]) => {
+    set({ pages });
+  },
+
+  selectPage: (pageId: string | null) => {
+    set({ selectedPageId: pageId });
+  },
+
+  setExams: (exams: Exam[]) => {
+    set({ exams });
+  },
+
+  setPayments: (payments: Payment[]) => {
+    set({ payments });
   },
 
   initAuth: () => {

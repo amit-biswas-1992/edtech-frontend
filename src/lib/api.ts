@@ -1,6 +1,7 @@
 import {
-  AuthResponse, Course, Enrollment, EnrollmentStats, Notice, Promo,
-  Result, ResultStats, Schedule, Site, SiteSection, Teacher, Template, User,
+  AuthResponse, Course, Enrollment, EnrollmentStats, Exam, ExamAttempt,
+  LeaderboardEntry, Notice, Payment, Promo, Question,
+  Result, ResultStats, Schedule, Site, SitePage, SiteSection, Teacher, Template, User,
 } from './types';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
@@ -495,5 +496,86 @@ export const notices = {
     return request<void>(`/sites/${siteId}/notices/${id}`, {
       method: 'DELETE',
     });
+  },
+};
+
+// === Pages API ===
+export const pages = {
+  getPages(siteId: string): Promise<SitePage[]> {
+    return request<SitePage[]>(`/sites/${siteId}/pages`);
+  },
+  getPage(siteId: string, pageId: string): Promise<SitePage> {
+    return request<SitePage>(`/sites/${siteId}/pages/${pageId}`);
+  },
+  createPage(siteId: string, data: Partial<SitePage>): Promise<SitePage> {
+    return request<SitePage>(`/sites/${siteId}/pages`, { method: 'POST', body: JSON.stringify(data) });
+  },
+  updatePage(siteId: string, pageId: string, data: Partial<SitePage>): Promise<SitePage> {
+    return request<SitePage>(`/sites/${siteId}/pages/${pageId}`, { method: 'PATCH', body: JSON.stringify(data) });
+  },
+  deletePage(siteId: string, pageId: string): Promise<void> {
+    return request<void>(`/sites/${siteId}/pages/${pageId}`, { method: 'DELETE' });
+  },
+  reorderPages(siteId: string, items: { id: string; order: number }[]): Promise<void> {
+    return request<void>(`/sites/${siteId}/pages/reorder`, { method: 'POST', body: JSON.stringify({ items }) });
+  },
+};
+
+// === Exams API ===
+export const exams = {
+  getExams(siteId: string): Promise<Exam[]> {
+    return request<Exam[]>(`/sites/${siteId}/exams`);
+  },
+  getExam(siteId: string, examId: string): Promise<Exam> {
+    return request<Exam>(`/sites/${siteId}/exams/${examId}`);
+  },
+  createExam(siteId: string, data: Partial<Exam>): Promise<Exam> {
+    return request<Exam>(`/sites/${siteId}/exams`, { method: 'POST', body: JSON.stringify(data) });
+  },
+  updateExam(siteId: string, examId: string, data: Partial<Exam>): Promise<Exam> {
+    return request<Exam>(`/sites/${siteId}/exams/${examId}`, { method: 'PATCH', body: JSON.stringify(data) });
+  },
+  deleteExam(siteId: string, examId: string): Promise<void> {
+    return request<void>(`/sites/${siteId}/exams/${examId}`, { method: 'DELETE' });
+  },
+  getQuestions(siteId: string, examId: string): Promise<Question[]> {
+    return request<Question[]>(`/sites/${siteId}/exams/${examId}/questions`);
+  },
+  addQuestions(siteId: string, examId: string, questions: Partial<Question>[]): Promise<Question[]> {
+    return request<Question[]>(`/sites/${siteId}/exams/${examId}/questions`, { method: 'POST', body: JSON.stringify({ questions }) });
+  },
+  updateQuestion(siteId: string, examId: string, questionId: string, data: Partial<Question>): Promise<Question> {
+    return request<Question>(`/sites/${siteId}/exams/${examId}/questions/${questionId}`, { method: 'PUT', body: JSON.stringify(data) });
+  },
+  deleteQuestion(siteId: string, examId: string, questionId: string): Promise<void> {
+    return request<void>(`/sites/${siteId}/exams/${examId}/questions/${questionId}`, { method: 'DELETE' });
+  },
+  startAttempt(siteId: string, examId: string): Promise<{ attempt: ExamAttempt; questions: Question[] }> {
+    return request<{ attempt: ExamAttempt; questions: Question[] }>(`/sites/${siteId}/exams/${examId}/start`, { method: 'POST' });
+  },
+  submitAttempt(siteId: string, examId: string, answers: { questionId: string; selectedOptionId: string | null }[]): Promise<ExamAttempt> {
+    return request<ExamAttempt>(`/sites/${siteId}/exams/${examId}/submit`, { method: 'POST', body: JSON.stringify({ answers }) });
+  },
+  getAttempts(siteId: string, examId: string): Promise<ExamAttempt[]> {
+    return request<ExamAttempt[]>(`/sites/${siteId}/exams/${examId}/attempts`);
+  },
+  getResult(siteId: string, examId: string, attemptId: string): Promise<ExamAttempt> {
+    return request<ExamAttempt>(`/sites/${siteId}/exams/${examId}/result/${attemptId}`);
+  },
+  getLeaderboard(siteId: string, examId: string): Promise<LeaderboardEntry[]> {
+    return request<LeaderboardEntry[]>(`/sites/${siteId}/exams/${examId}/leaderboard`);
+  },
+};
+
+// === Payments API ===
+export const payments = {
+  initiatePayment(siteId: string, data: { courseId: string; method: string }): Promise<{ paymentId: string; redirectUrl: string }> {
+    return request<{ paymentId: string; redirectUrl: string }>(`/sites/${siteId}/payments/initiate`, { method: 'POST', body: JSON.stringify(data) });
+  },
+  getPayments(siteId: string): Promise<Payment[]> {
+    return request<Payment[]>(`/sites/${siteId}/payments`);
+  },
+  getPayment(siteId: string, paymentId: string): Promise<Payment> {
+    return request<Payment>(`/sites/${siteId}/payments/${paymentId}`);
   },
 };
