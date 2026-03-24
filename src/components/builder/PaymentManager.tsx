@@ -3,20 +3,20 @@
 import { useState, useMemo, useEffect, useCallback } from 'react';
 import { useAppStore } from '@/lib/store';
 import * as api from '@/lib/api';
-import type { Payment, PaymentMethod, PaymentStatusType } from '@/lib/types';
+import type { Payment, PaymentMethodType, PaymentStatusEnum } from '@/lib/types';
 
 interface PaymentManagerProps {
   siteId: string;
 }
 
-const METHOD_COLORS: Record<PaymentMethod, string> = {
+const METHOD_COLORS: Record<PaymentMethodType, string> = {
   bkash: 'bg-pink-100 text-pink-700',
   nagad: 'bg-orange-100 text-orange-700',
   cash: 'bg-gray-100 text-gray-700',
   bank: 'bg-blue-100 text-blue-700',
 };
 
-const STATUS_COLORS: Record<PaymentStatusType, string> = {
+const STATUS_COLORS: Record<PaymentStatusEnum, string> = {
   pending: 'bg-yellow-100 text-yellow-700',
   processing: 'bg-blue-100 text-blue-700',
   completed: 'bg-green-100 text-green-700',
