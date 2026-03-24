@@ -21,6 +21,7 @@ import { useAppStore } from '@/lib/store';
 import * as api from '@/lib/api';
 import ColorPicker from './ColorPicker';
 import SeoEditor from './SeoEditor';
+import FontSettings from './FontSettings';
 import type { Language } from '@/lib/translations';
 
 export default function BuilderHeader() {
@@ -35,6 +36,7 @@ export default function BuilderHeader() {
   const [publishing, setPublishing] = useState(false);
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [showSeoEditor, setShowSeoEditor] = useState(false);
+  const [showFontSettings, setShowFontSettings] = useState(false);
   const [editingSubdomain, setEditingSubdomain] = useState(false);
   const [subdomainValue, setSubdomainValue] = useState('');
 
@@ -370,6 +372,18 @@ export default function BuilderHeader() {
             </button>
           </div>
 
+          {/* Font Settings */}
+          <button
+            onClick={() => setShowFontSettings(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+            title="Font Settings"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h8m-8 6h16" />
+            </svg>
+            <span className="hidden md:inline">Fonts</span>
+          </button>
+
           {/* SEO */}
           <button
             onClick={() => setShowSeoEditor(true)}
@@ -427,6 +441,11 @@ export default function BuilderHeader() {
       {/* SEO Slide-over */}
       {showSeoEditor && (
         <SeoEditor onClose={() => setShowSeoEditor(false)} />
+      )}
+
+      {/* Font Settings Modal */}
+      {showFontSettings && (
+        <FontSettings onClose={() => setShowFontSettings(false)} />
       )}
     </>
   );

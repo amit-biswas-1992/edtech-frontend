@@ -17,6 +17,13 @@ export interface ColorTheme {
   name: string;
 }
 
+export interface FontConfig {
+  headingFont: string;
+  bodyFont: string;
+  banglaFont: string;
+  fontSize: 'small' | 'medium' | 'large';
+}
+
 export type SectionType =
   | 'hero' | 'about' | 'courses' | 'admission_info' | 'success_stories'
   | 'faculty' | 'testimonials' | 'faq' | 'contact' | 'footer'
@@ -54,6 +61,7 @@ export interface Site {
   chatConfig: ChatConfig | null;
   themeMode?: 'light' | 'dark' | 'system';
   language?: 'en' | 'bn' | 'hi';
+  fontConfig?: FontConfig | null;
   pages?: SitePage[];
   createdAt: string;
   updatedAt: string;

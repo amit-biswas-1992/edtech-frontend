@@ -181,6 +181,7 @@ export const sites = {
         | 'isPublished'
         | 'themeMode'
         | 'language'
+        | 'fontConfig'
       >
     >
   ): Promise<Site> {
