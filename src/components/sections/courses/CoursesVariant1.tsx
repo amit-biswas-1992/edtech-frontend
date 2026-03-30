@@ -18,17 +18,17 @@ interface SectionProps {
 }
 
 const defaultCourses = [
-  { name: "Science", description: "Comprehensive science program covering Physics, Chemistry, and Biology with practical lab work.", duration: "2 Years", fee: "BDT 50,000/yr" },
-  { name: "Commerce", description: "Business-focused curriculum with Accounting, Finance, and Economics for future entrepreneurs.", duration: "2 Years", fee: "BDT 45,000/yr" },
-  { name: "Arts & Humanities", description: "Broad curriculum exploring Literature, History, and Social Sciences for well-rounded education.", duration: "2 Years", fee: "BDT 40,000/yr" },
-  { name: "Computer Science", description: "Modern technology curriculum with programming, web development, and data science.", duration: "2 Years", fee: "BDT 55,000/yr" },
-  { name: "Engineering Prep", description: "Intensive preparation for engineering entrance exams with advanced Mathematics and Physics.", duration: "1 Year", fee: "BDT 60,000/yr" },
-  { name: "Medical Prep", description: "Comprehensive preparation for medical admission tests with Biology and Chemistry focus.", duration: "1 Year", fee: "BDT 65,000/yr" },
+  { name: "বিজ্ঞান বিভাগ", description: "পদার্থবিদ্যা, রসায়ন ও জীববিদ্যা সহ ব্যবহারিক ল্যাব ওয়ার্ক।", duration: "২ বছর", fee: "৳৫০,০০০/বছর" },
+  { name: "ব্যবসায় শিক্ষা", description: "হিসাববিজ্ঞান, অর্থনীতি ও ব্যবসায় উদ্যোগ কেন্দ্রিক পাঠ্যক্রম।", duration: "২ বছর", fee: "৳৪৫,০০০/বছর" },
+  { name: "কলা বিভাগ", description: "সাহিত্য, ইতিহাস ও সমাজবিজ্ঞান নিয়ে সমৃদ্ধ পাঠ্যক্রম।", duration: "২ বছর", fee: "৳৪০,০০০/বছর" },
+  { name: "কম্পিউটার সায়েন্স", description: "প্রোগ্রামিং, ওয়েব ডেভেলপমেন্ট ও ডেটা সায়েন্স।", duration: "২ বছর", fee: "৳৫৫,০০০/বছর" },
+  { name: "ইঞ্জিনিয়ারিং প্রস্তুতি", description: "উচ্চতর গণিত ও পদার্থবিদ্যা কেন্দ্রিক নিবিড় প্রস্তুতি।", duration: "১ বছর", fee: "৳৬০,০০০/বছর" },
+  { name: "মেডিকেল প্রস্তুতি", description: "জীববিদ্যা ও রসায়ন কেন্দ্রিক ভর্তি পরীক্ষা প্রস্তুতি।", duration: "১ বছর", fee: "৳৬৫,০০০/বছর" },
 ];
 
 const defaults = {
-  title: "Our Programs",
-  subtitle: "Explore our comprehensive range of academic programs designed to prepare students for success.",
+  title: "আমাদের প্রোগ্রামসমূহ",
+  subtitle: "শিক্ষার্থীদের সাফল্যের জন্য ডিজাইন করা আমাদের একাডেমিক প্রোগ্রামগুলো দেখুন।",
   courses: defaultCourses,
 };
 
@@ -45,11 +45,16 @@ function mapDynamicCourses(dynamicCourses: Course[]): { name: string; descriptio
     name: c.title,
     description: c.description || "",
     duration: c.duration || "",
-    fee: c.fee !== null ? `\u09F3${c.fee.toLocaleString()}` : "",
+    fee: c.fee !== null ? `৳${c.fee.toLocaleString()}` : "",
     category: c.category,
   }));
 }
 
+/* ──────────────────────────────────────────────
+   Variant 1 — Glass Cards
+   Frosted glass cards with category badges,
+   hover glow, price in accent
+   ────────────────────────────────────────────── */
 export default function CoursesVariant1({ content, colorTheme, courses: dynamicCourses }: SectionProps) {
   const c = { ...defaults, ...content };
   const hasDynamic = dynamicCourses && dynamicCourses.length > 0;
@@ -57,123 +62,167 @@ export default function CoursesVariant1({ content, colorTheme, courses: dynamicC
 
   return (
     <section
-      className="py-20 px-4 sm:px-6 lg:px-8"
-      style={{ backgroundColor: colorTheme.background }}
+      className="relative py-24 px-4 sm:px-6 lg:px-8 overflow-hidden"
+      style={{
+        background: `linear-gradient(135deg, ${colorTheme.primary}08 0%, ${colorTheme.background} 40%, ${colorTheme.accent}06 100%)`,
+      }}
     >
-      <div className="max-w-7xl mx-auto">
+      {/* Ambient background orbs */}
+      <div
+        className="absolute top-0 left-1/4 w-[600px] h-[600px] rounded-full blur-3xl opacity-[0.07] pointer-events-none"
+        style={{ backgroundColor: colorTheme.primary }}
+      />
+      <div
+        className="absolute bottom-0 right-1/4 w-[500px] h-[500px] rounded-full blur-3xl opacity-[0.05] pointer-events-none"
+        style={{ backgroundColor: colorTheme.accent }}
+      />
+
+      <style>{`
+        @keyframes coursesV1FadeUp {
+          from { opacity: 0; transform: translateY(30px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .cv1-card {
+          animation: coursesV1FadeUp 0.6s ease-out both;
+        }
+        .cv1-card:nth-child(1) { animation-delay: 0.05s; }
+        .cv1-card:nth-child(2) { animation-delay: 0.1s; }
+        .cv1-card:nth-child(3) { animation-delay: 0.15s; }
+        .cv1-card:nth-child(4) { animation-delay: 0.2s; }
+        .cv1-card:nth-child(5) { animation-delay: 0.25s; }
+        .cv1-card:nth-child(6) { animation-delay: 0.3s; }
+      `}</style>
+
+      <div className="relative z-10 max-w-7xl mx-auto">
         {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
+        <div className="text-center max-w-3xl mx-auto mb-20">
           <div
-            className="inline-block px-4 py-1 rounded-full text-sm font-semibold tracking-wide uppercase mb-4"
+            className="inline-flex items-center gap-2 px-5 py-2 rounded-full text-xs font-bold tracking-widest uppercase mb-6"
             style={{
-              backgroundColor: `${colorTheme.primary}12`,
+              background: `linear-gradient(135deg, ${colorTheme.primary}15, ${colorTheme.accent}15)`,
               color: colorTheme.primary,
+              border: `1px solid ${colorTheme.primary}20`,
+              backdropFilter: "blur(10px)",
             }}
           >
-            Programs
+            <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: colorTheme.accent }} />
+            প্রোগ্রামসমূহ
           </div>
           <h2
-            className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight mb-4"
+            className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.1] mb-6 tracking-tight"
             style={{ color: colorTheme.text }}
           >
             {c.title}
           </h2>
           <p
-            className="text-lg leading-relaxed"
-            style={{ color: `${colorTheme.text}aa` }}
+            className="text-lg sm:text-xl leading-relaxed max-w-2xl mx-auto"
+            style={{ color: `${colorTheme.text}99` }}
           >
             {c.subtitle}
           </p>
         </div>
 
-        {/* Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {/* Glass card grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
           {courses.map((course: any, i: number) => {
-            const colors = [colorTheme.primary, colorTheme.secondary, colorTheme.accent];
+            const themeColors = [colorTheme.primary, colorTheme.secondary, colorTheme.accent];
             const cardColor = course.category && categoryColorMap[course.category]
               ? categoryColorMap[course.category]
-              : colors[i % colors.length];
+              : themeColors[i % themeColors.length];
 
             return (
               <div
                 key={i}
-                className="group relative p-6 rounded-2xl transition-all duration-300 hover:-translate-y-2 hover:shadow-xl overflow-hidden"
+                className="cv1-card group relative rounded-3xl p-7 transition-all duration-500 hover:-translate-y-3 cursor-pointer"
                 style={{
-                  backgroundColor: colorTheme.background,
-                  border: `1px solid ${cardColor}20`,
-                  boxShadow: `0 4px 15px ${cardColor}08`,
+                  background: `linear-gradient(145deg, ${colorTheme.background}e6, ${colorTheme.background}cc)`,
+                  backdropFilter: "blur(20px) saturate(180%)",
+                  WebkitBackdropFilter: "blur(20px) saturate(180%)",
+                  border: `1px solid ${cardColor}18`,
+                  boxShadow: `0 4px 30px ${cardColor}06`,
                 }}
               >
-                {/* Top gradient bar */}
+                {/* Hover glow effect */}
                 <div
-                  className="absolute top-0 left-0 right-0 h-1 group-hover:h-1.5 transition-all duration-300"
+                  className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
                   style={{
-                    background: `linear-gradient(90deg, ${cardColor}, ${cardColor}88)`,
+                    boxShadow: `0 0 60px ${cardColor}18, inset 0 0 60px ${cardColor}05`,
+                  }}
+                />
+                {/* Top gradient accent line */}
+                <div
+                  className="absolute top-0 left-6 right-6 h-[2px] rounded-full opacity-60 group-hover:opacity-100 transition-opacity duration-500"
+                  style={{
+                    background: `linear-gradient(90deg, transparent, ${cardColor}, transparent)`,
                   }}
                 />
 
                 {/* Category badge */}
                 {course.category && (
                   <span
-                    className="inline-block text-[10px] font-bold uppercase tracking-wide px-2.5 py-0.5 rounded-full mb-3"
+                    className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-4"
                     style={{
-                      backgroundColor: `${cardColor}15`,
+                      background: `${cardColor}12`,
                       color: cardColor,
+                      border: `1px solid ${cardColor}20`,
                     }}
                   >
+                    <span className="w-1 h-1 rounded-full" style={{ backgroundColor: cardColor }} />
                     {course.category}
                   </span>
                 )}
 
-                {/* Course icon */}
+                {/* Icon */}
                 <div
-                  className="w-12 h-12 rounded-xl flex items-center justify-center mb-4"
+                  className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3"
                   style={{
-                    backgroundColor: `${cardColor}12`,
-                    color: cardColor,
+                    background: `linear-gradient(135deg, ${cardColor}15, ${cardColor}08)`,
+                    border: `1px solid ${cardColor}15`,
                   }}
                 >
-                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                  <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke={cardColor} strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5" />
                   </svg>
                 </div>
 
                 <h3
-                  className="text-xl font-bold mb-2"
+                  className="text-xl font-bold mb-2.5 tracking-tight"
                   style={{ color: colorTheme.text }}
                 >
                   {course.name}
                 </h3>
 
                 <p
-                  className="text-sm leading-relaxed mb-4"
-                  style={{ color: `${colorTheme.text}aa` }}
+                  className="text-sm leading-relaxed mb-6 line-clamp-3"
+                  style={{ color: `${colorTheme.text}88` }}
                 >
                   {course.description}
                 </p>
 
-                {/* Meta info */}
-                <div className="flex items-center gap-3 flex-wrap">
+                {/* Meta row */}
+                <div className="flex items-center gap-2.5 flex-wrap mt-auto pt-5" style={{ borderTop: `1px solid ${colorTheme.text}08` }}>
                   {course.duration && (
                     <span
-                      className="inline-flex items-center gap-1 text-xs font-medium px-3 py-1 rounded-full"
+                      className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full"
                       style={{
-                        backgroundColor: `${cardColor}10`,
-                        color: cardColor,
+                        background: `${cardColor}0a`,
+                        color: `${colorTheme.text}99`,
+                        border: `1px solid ${cardColor}12`,
                       }}
                     >
-                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                       </svg>
                       {course.duration}
                     </span>
                   )}
                   {course.fee && (
                     <span
-                      className="inline-flex items-center gap-1 text-xs font-medium px-3 py-1 rounded-full"
+                      className="inline-flex items-center text-sm font-bold px-3.5 py-1.5 rounded-full ml-auto"
                       style={{
-                        backgroundColor: `${colorTheme.accent}10`,
+                        background: `${colorTheme.accent}10`,
                         color: colorTheme.accent,
+                        border: `1px solid ${colorTheme.accent}18`,
                       }}
                     >
                       {course.fee}

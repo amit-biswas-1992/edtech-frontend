@@ -2,6 +2,7 @@
 
 import { useMemo } from 'react';
 import { ColorTheme, Course, Notice, Promo, Result, ResultStats, Schedule, Site, SiteSection, SectionType, Teacher } from '@/lib/types';
+import ScrollReveal from '@/components/animations/ScrollReveal';
 import HeroSection from '@/components/sections/hero';
 import AboutSection from '@/components/sections/about';
 import CoursesSection from '@/components/sections/courses';
@@ -109,7 +110,10 @@ export default function SiteRenderer({
           extraProps.promos = promos;
         }
 
-        return (
+        // First section (hero) renders immediately, others scroll-reveal
+        const isHero = section.sectionType === 'hero';
+
+        return isHero ? (
           <Component
             key={section.id}
             content={section.content}
@@ -117,24 +121,41 @@ export default function SiteRenderer({
             designVariant={section.designVariant}
             {...extraProps}
           />
+        ) : (
+          <ScrollReveal key={section.id} direction="up" delay={0.05}>
+            <Component
+              content={section.content}
+              colorTheme={effectiveTheme}
+              designVariant={section.designVariant}
+              {...extraProps}
+            />
+          </ScrollReveal>
         );
       })}
 
       {/* New Sections - After existing sections */}
       {publishedNotices.length > 0 && (
-        <NoticeBoard notices={publishedNotices} colorTheme={effectiveTheme} />
+        <ScrollReveal direction="up">
+          <NoticeBoard notices={publishedNotices} colorTheme={effectiveTheme} />
+        </ScrollReveal>
       )}
 
       {activeSchedules.length > 0 && (
-        <ScheduleView schedules={activeSchedules} colorTheme={effectiveTheme} />
+        <ScrollReveal direction="up">
+          <ScheduleView schedules={activeSchedules} colorTheme={effectiveTheme} />
+        </ScrollReveal>
       )}
 
       {results.length > 0 && (
-        <ResultShowcase results={results} resultStats={resultStats} colorTheme={effectiveTheme} />
+        <ScrollReveal direction="up">
+          <ResultShowcase results={results} resultStats={resultStats} colorTheme={effectiveTheme} />
+        </ScrollReveal>
       )}
 
       {/* Enrollment form is always shown - this is the conversion point */}
-      <EnrollmentForm siteId={site.id} courses={courses} colorTheme={effectiveTheme} />
+      <ScrollReveal direction="up">
+        <EnrollmentForm siteId={site.id} courses={courses} colorTheme={effectiveTheme} />
+      </ScrollReveal>
 
       {/* Floating Chat Widget */}
       {showChatWidget && site.chatConfig && (

@@ -1,5 +1,6 @@
 'use client';
 
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAppStore, BuilderTab } from '@/lib/store';
 import {
   HiOutlineSquares2X2,
@@ -60,7 +61,11 @@ export default function BuilderSidebar({ siteId }: BuilderSidebarProps) {
                 <Icon className="w-4.5 h-4.5" />
                 <span className="whitespace-nowrap">{tab.label}</span>
                 {isActive && (
-                  <div className="absolute bottom-0 left-2 right-2 h-0.5 bg-blue-600 rounded-full" />
+                  <motion.div
+                    layoutId="sidebar-tab-indicator"
+                    className="absolute bottom-0 left-2 right-2 h-0.5 bg-blue-600 rounded-full"
+                    transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                  />
                 )}
               </button>
             );
@@ -68,16 +73,27 @@ export default function BuilderSidebar({ siteId }: BuilderSidebarProps) {
         </div>
       </div>
 
-      {/* Tab Content */}
+      {/* Tab Content with slide transition */}
       <div className="flex-1 overflow-hidden">
-        {activeBuilderTab === 'sections' && <SectionList />}
-        {activeBuilderTab === 'courses' && <CourseManager siteId={siteId} />}
-        {activeBuilderTab === 'teachers' && <TeacherManager siteId={siteId} />}
-        {activeBuilderTab === 'promos' && <PromoManager siteId={siteId} />}
-        {activeBuilderTab === 'enrollments' && <EnrollmentManager siteId={siteId} />}
-        {activeBuilderTab === 'schedules' && <ScheduleManager siteId={siteId} />}
-        {activeBuilderTab === 'results' && <ResultManager siteId={siteId} />}
-        {activeBuilderTab === 'notices' && <NoticeManager siteId={siteId} />}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeBuilderTab}
+            initial={{ opacity: 0, x: 10 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -10 }}
+            transition={{ duration: 0.2, ease: 'easeInOut' }}
+            className="h-full"
+          >
+            {activeBuilderTab === 'sections' && <SectionList />}
+            {activeBuilderTab === 'courses' && <CourseManager siteId={siteId} />}
+            {activeBuilderTab === 'teachers' && <TeacherManager siteId={siteId} />}
+            {activeBuilderTab === 'promos' && <PromoManager siteId={siteId} />}
+            {activeBuilderTab === 'enrollments' && <EnrollmentManager siteId={siteId} />}
+            {activeBuilderTab === 'schedules' && <ScheduleManager siteId={siteId} />}
+            {activeBuilderTab === 'results' && <ResultManager siteId={siteId} />}
+            {activeBuilderTab === 'notices' && <NoticeManager siteId={siteId} />}
+          </motion.div>
+        </AnimatePresence>
       </div>
     </div>
   );

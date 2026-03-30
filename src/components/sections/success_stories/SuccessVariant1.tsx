@@ -78,19 +78,38 @@ export default function SuccessVariant1({ content, colorTheme }: SectionProps) {
 
   return (
     <section
-      className="py-20 px-4 sm:px-6 lg:px-8"
+      className="relative py-24 px-4 sm:px-6 lg:px-8 overflow-hidden"
       style={{ backgroundColor: colorTheme.background }}
     >
-      <div className="max-w-7xl mx-auto">
+      {/* Decorative floating orbs */}
+      <div
+        className="absolute -top-20 -right-20 w-96 h-96 rounded-full blur-3xl opacity-15 pointer-events-none"
+        style={{ background: `radial-gradient(circle, ${colorTheme.primary}, transparent)` }}
+      />
+      <div
+        className="absolute -bottom-32 -left-20 w-80 h-80 rounded-full blur-3xl opacity-15 pointer-events-none"
+        style={{ background: `radial-gradient(circle, ${colorTheme.accent}, transparent)` }}
+      />
+      <div
+        className="absolute top-1/3 right-1/4 w-40 h-40 rounded-full blur-2xl opacity-10 pointer-events-none"
+        style={{ background: `radial-gradient(circle, ${colorTheme.secondary}, transparent)` }}
+      />
+
+      <div className="relative max-w-7xl mx-auto z-10">
         {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-12">
+        <div className="text-center max-w-3xl mx-auto mb-14">
           <div
-            className="inline-block px-4 py-1 rounded-full text-sm font-semibold tracking-wide uppercase mb-4"
+            className="inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold tracking-wide uppercase mb-6 backdrop-blur-xl"
             style={{
-              backgroundColor: `${colorTheme.primary}12`,
+              backgroundColor: `${colorTheme.primary}15`,
               color: colorTheme.primary,
+              border: `1px solid ${colorTheme.primary}20`,
+              boxShadow: `0 0 20px ${colorTheme.primary}08`,
             }}
           >
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+            </svg>
             Achievements
           </div>
           <h2
@@ -101,79 +120,143 @@ export default function SuccessVariant1({ content, colorTheme }: SectionProps) {
           </h2>
         </div>
 
-        {/* Stats counters */}
+        {/* Stats counters - glass card */}
         <div
-          className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-16 p-8 rounded-3xl"
+          className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-20 p-8 sm:p-10 rounded-3xl backdrop-blur-xl"
           style={{
-            background: `linear-gradient(135deg, ${colorTheme.primary}, ${colorTheme.secondary})`,
-            boxShadow: `0 12px 40px ${colorTheme.primary}33`,
+            background: `linear-gradient(135deg, ${colorTheme.primary}20, ${colorTheme.secondary}15, ${colorTheme.accent}10)`,
+            border: `1px solid ${colorTheme.primary}20`,
+            boxShadow: `0 20px 60px ${colorTheme.primary}15, inset 0 1px 0 ${colorTheme.primary}15`,
           }}
         >
           {stats.map((stat, i) => (
-            <div key={i} className="text-center">
-              <div className="text-3xl sm:text-4xl lg:text-5xl font-black text-white mb-1">
+            <div
+              key={i}
+              className="text-center p-4 rounded-2xl backdrop-blur-sm transition-all duration-300 hover:scale-105"
+              style={{
+                backgroundColor: `${colorTheme.primary}08`,
+                border: `1px solid ${colorTheme.primary}10`,
+              }}
+            >
+              <div
+                className="text-3xl sm:text-4xl lg:text-5xl font-black mb-1"
+                style={{ color: colorTheme.primary }}
+              >
                 <AnimatedCounter target={stat.value} suffix={stat.suffix} />
               </div>
-              <div className="text-white/70 text-sm font-medium">{stat.label}</div>
+              <div className="text-sm font-medium" style={{ color: `${colorTheme.text}88` }}>
+                {stat.label}
+              </div>
             </div>
           ))}
         </div>
 
         {/* Story cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {stories.map((story: any, i: number) => (
-            <div
-              key={i}
-              className="group p-6 rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
-              style={{
-                backgroundColor: colorTheme.background,
-                border: `1px solid ${colorTheme.primary}15`,
-              }}
-            >
-              <div className="flex items-center gap-4 mb-4">
-                {/* Avatar */}
-                <div
-                  className="w-14 h-14 rounded-full flex items-center justify-center text-lg font-bold flex-shrink-0"
-                  style={{
-                    background: story.image
-                      ? `url(${story.image}) center/cover no-repeat`
-                      : `linear-gradient(135deg, ${colorTheme.primary}30, ${colorTheme.accent}30)`,
-                    color: colorTheme.primary,
-                  }}
-                >
-                  {!story.image && story.name?.charAt(0)}
-                </div>
-                <div>
-                  <h4
-                    className="font-bold"
-                    style={{ color: colorTheme.text }}
-                  >
-                    {story.name}
-                  </h4>
-                  {story.year && (
-                    <span
-                      className="text-xs font-medium"
-                      style={{ color: `${colorTheme.text}88` }}
-                    >
-                      Batch of {story.year}
-                    </span>
-                  )}
-                </div>
-              </div>
+          {stories.map((story: any, i: number) => {
+            const colors = [colorTheme.primary, colorTheme.secondary, colorTheme.accent];
+            const cardColor = colors[i % colors.length];
 
+            return (
               <div
-                className="px-4 py-3 rounded-xl text-sm font-semibold"
+                key={i}
+                className="group relative p-6 rounded-2xl transition-all duration-500 hover:-translate-y-2 backdrop-blur-xl cursor-default overflow-hidden"
                 style={{
-                  backgroundColor: `${colorTheme.accent}10`,
-                  color: colorTheme.accent,
+                  backgroundColor: `${cardColor}06`,
+                  border: `1px solid ${cardColor}15`,
+                  boxShadow: `0 4px 20px ${cardColor}05, inset 0 1px 0 ${cardColor}10`,
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.boxShadow = `0 16px 48px ${cardColor}15, inset 0 1px 0 ${cardColor}15`;
+                  e.currentTarget.style.borderColor = `${cardColor}30`;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.boxShadow = `0 4px 20px ${cardColor}05, inset 0 1px 0 ${cardColor}10`;
+                  e.currentTarget.style.borderColor = `${cardColor}15`;
                 }}
               >
-                {story.result}
+                {/* Shimmer overlay on hover */}
+                <div
+                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none rounded-2xl"
+                  style={{
+                    background: `linear-gradient(105deg, transparent 40%, ${cardColor}08 45%, ${cardColor}12 50%, ${cardColor}08 55%, transparent 60%)`,
+                    backgroundSize: "200% 100%",
+                    animation: "shimmerCard 2s ease-in-out infinite",
+                  }}
+                />
+
+                <div className="relative flex items-center gap-4 mb-5">
+                  {/* Avatar with gradient ring */}
+                  <div
+                    className="relative w-16 h-16 rounded-full p-0.5 flex-shrink-0 transition-transform duration-500 group-hover:scale-110"
+                    style={{
+                      background: `linear-gradient(135deg, ${cardColor}, ${cardColor}60)`,
+                    }}
+                  >
+                    <div
+                      className="w-full h-full rounded-full flex items-center justify-center text-lg font-bold"
+                      style={{
+                        background: story.image
+                          ? `url(${story.image}) center/cover no-repeat`
+                          : colorTheme.background,
+                        color: cardColor,
+                      }}
+                    >
+                      {!story.image && story.name?.charAt(0)}
+                    </div>
+                    {/* Glow effect */}
+                    <div
+                      className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                      style={{
+                        boxShadow: `0 0 20px ${cardColor}40`,
+                      }}
+                    />
+                  </div>
+
+                  <div>
+                    <h4 className="font-bold text-base" style={{ color: colorTheme.text }}>
+                      {story.name}
+                    </h4>
+                    {story.year && (
+                      <span
+                        className="inline-flex items-center gap-1 text-xs font-medium mt-0.5 px-2 py-0.5 rounded-full backdrop-blur-sm"
+                        style={{
+                          color: `${colorTheme.text}77`,
+                          backgroundColor: `${cardColor}10`,
+                        }}
+                      >
+                        Batch of {story.year}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Achievement badge */}
+                <div
+                  className="relative px-4 py-3 rounded-xl text-sm font-semibold flex items-center gap-2 backdrop-blur-sm overflow-hidden"
+                  style={{
+                    backgroundColor: `${cardColor}10`,
+                    color: cardColor,
+                    border: `1px solid ${cardColor}15`,
+                  }}
+                >
+                  <svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                  </svg>
+                  {story.result}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
+
+      <style jsx>{`
+        @keyframes shimmerCard {
+          0% { background-position: 200% 0; }
+          100% { background-position: -200% 0; }
+        }
+      `}</style>
     </section>
   );
 }

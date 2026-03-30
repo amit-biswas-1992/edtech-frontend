@@ -46,58 +46,117 @@ export default function FAQVariant2({ content, colorTheme }: SectionProps) {
 
   return (
     <section
-      className="py-16 md:py-24 px-6"
-      style={{ backgroundColor: `${colorTheme.primary}08` }}
+      className="py-24 px-4 sm:px-6 lg:px-8"
+      style={{ backgroundColor: colorTheme.background }}
     >
-      <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-12">
+      {/* Top accent line */}
+      <div
+        className="w-20 h-1 mx-auto mb-6"
+        style={{ backgroundColor: colorTheme.primary }}
+      />
+
+      <div className="max-w-3xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-16">
           <h2
-            className="text-3xl md:text-4xl font-bold mb-4"
+            className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight mb-4"
             style={{ color: colorTheme.text }}
           >
             {heading}
           </h2>
-          <p className="text-lg opacity-70" style={{ color: colorTheme.text }}>
+          <p
+            className="text-base sm:text-lg max-w-xl mx-auto"
+            style={{ color: `${colorTheme.text}60` }}
+          >
             {subtitle}
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-4">
-          {faqs.map((faq, index) => (
-            <div
-              key={index}
-              className="bg-white rounded-xl p-6 shadow-sm border border-gray-100"
-            >
-              <button
-                className="w-full text-left flex items-start justify-between gap-3"
-                onClick={() =>
-                  setOpenIndex(openIndex === index ? null : index)
-                }
+        {/* Accordion */}
+        <div
+          className="divide-y"
+          style={{ borderColor: `${colorTheme.text}10` }}
+        >
+          {faqs.map((faq, index) => {
+            const isOpen = openIndex === index;
+            const number = String(index + 1).padStart(2, "0");
+
+            return (
+              <div
+                key={index}
+                className="transition-all duration-300"
+                style={{
+                  borderColor: `${colorTheme.text}10`,
+                  borderLeftWidth: "3px",
+                  borderLeftColor: isOpen ? colorTheme.primary : "transparent",
+                }}
               >
-                <span
-                  className="font-semibold text-base"
-                  style={{ color: colorTheme.text }}
+                <button
+                  className="w-full text-left py-6 px-5 flex items-center gap-5 transition-all duration-300 group"
+                  onClick={() => setOpenIndex(isOpen ? null : index)}
+                  style={{
+                    backgroundColor: isOpen ? `${colorTheme.primary}05` : "transparent",
+                  }}
                 >
-                  {faq.question}
-                </span>
-                <span
-                  className="mt-1 w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-white text-sm"
-                  style={{ backgroundColor: colorTheme.primary }}
+                  {/* Number */}
+                  <span
+                    className="font-mono text-sm font-bold flex-shrink-0 tracking-wide transition-colors duration-300"
+                    style={{
+                      color: isOpen ? colorTheme.primary : `${colorTheme.text}30`,
+                    }}
+                  >
+                    {number}
+                  </span>
+
+                  {/* Question */}
+                  <span
+                    className="font-semibold text-base sm:text-lg flex-1 transition-colors duration-300"
+                    style={{
+                      color: isOpen ? colorTheme.primary : colorTheme.text,
+                    }}
+                  >
+                    {faq.question}
+                  </span>
+
+                  {/* Plus/Minus toggle */}
+                  <div
+                    className="w-8 h-8 flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:scale-110"
+                    style={{
+                      backgroundColor: isOpen ? colorTheme.primary : `${colorTheme.text}08`,
+                      color: isOpen ? "#ffffff" : colorTheme.text,
+                    }}
+                  >
+                    <span className="text-lg font-light leading-none">
+                      {isOpen ? "\u2212" : "+"}
+                    </span>
+                  </div>
+                </button>
+
+                {/* Answer */}
+                <div
+                  className="overflow-hidden transition-all duration-500 ease-in-out"
+                  style={{
+                    maxHeight: isOpen ? "300px" : "0px",
+                    opacity: isOpen ? 1 : 0,
+                  }}
                 >
-                  {openIndex === index ? "-" : "+"}
-                </span>
-              </button>
-              {openIndex === index && (
-                <p
-                  className="mt-3 text-sm leading-relaxed opacity-70"
-                  style={{ color: colorTheme.text }}
-                >
-                  {faq.answer}
-                </p>
-              )}
-            </div>
-          ))}
+                  <div
+                    className="pb-6 px-5 pl-[3.75rem] text-sm sm:text-base leading-relaxed"
+                    style={{ color: `${colorTheme.text}70` }}
+                  >
+                    {faq.answer}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
+
+        {/* Bottom accent */}
+        <div
+          className="w-full h-px mt-0"
+          style={{ backgroundColor: `${colorTheme.text}10` }}
+        />
       </div>
     </section>
   );

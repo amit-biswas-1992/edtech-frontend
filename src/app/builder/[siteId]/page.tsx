@@ -9,6 +9,7 @@ import { sectionMeta } from '@/lib/section-labels';
 import BuilderHeader from '@/components/builder/BuilderHeader';
 import BuilderSidebar from '@/components/builder/BuilderSidebar';
 import SectionEditor from '@/components/builder/SectionEditor';
+import RealPreviewSection from '@/components/builder/RealPreviewSection';
 import type { ColorTheme } from '@/lib/types';
 
 export default function BuilderPage() {
@@ -123,6 +124,25 @@ export default function BuilderPage() {
       name: 'Default',
     };
   }, [currentSite?.colorTheme, currentSite?.themeMode]);
+
+  // Keyboard shortcuts for undo/redo (A3)
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      const isMac = navigator.platform.toUpperCase().includes('MAC');
+      const mod = isMac ? e.metaKey : e.ctrlKey;
+      if (!mod) return;
+
+      if (e.key === 'z' && !e.shiftKey) {
+        e.preventDefault();
+        useAppStore.temporal.getState().undo();
+      } else if ((e.key === 'z' && e.shiftKey) || e.key === 'y') {
+        e.preventDefault();
+        useAppStore.temporal.getState().redo();
+      }
+    }
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   if (loading) {
     return (
@@ -256,12 +276,11 @@ export default function BuilderPage() {
                 </div>
               ) : (
                 visibleSections.map((section) => (
-                  <PreviewSection
+                  <RealPreviewSection
                     key={section.id}
                     section={section}
                     colorTheme={effectiveTheme}
                     isSelected={selectedSectionId === section.id}
-                    language={currentSite.language || 'bn'}
                   />
                 ))
               )}

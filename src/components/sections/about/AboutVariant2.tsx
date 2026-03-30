@@ -18,126 +18,206 @@ interface SectionProps {
 const defaults = {
   title: "About Our Institution",
   description:
-    "We are a leading educational institution committed to providing quality education that transforms lives.",
-  mission: "To provide accessible, high-quality education that empowers students to achieve their dreams and contribute meaningfully to society.",
-  vision: "To be the most trusted educational institution in the region, known for academic excellence and holistic development.",
+    "We are a leading educational institution committed to providing quality education that transforms lives. Founded with the vision of making education accessible to all, we have been nurturing young minds and building future leaders for over two decades.",
+  mission:
+    "To provide accessible, high-quality education that empowers students to achieve their dreams and contribute meaningfully to society.",
+  vision:
+    "To be the most trusted educational institution in the region, known for academic excellence and holistic development.",
   image: "",
 };
 
 export default function AboutVariant2({ content, colorTheme }: SectionProps) {
   const c = { ...defaults, ...content };
 
-  const cards = [
-    {
-      icon: (
-        <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
-        </svg>
-      ),
-      title: "Our Mission",
-      text: c.mission,
-      color: colorTheme.primary,
-    },
-    {
-      icon: (
-        <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-        </svg>
-      ),
-      title: "Our Vision",
-      text: c.vision,
-      color: colorTheme.secondary,
-    },
-    {
-      icon: (
-        <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-        </svg>
-      ),
-      title: "Our Values",
-      text: "Integrity, excellence, inclusivity, and a passion for lifelong learning guide everything we do.",
-      color: colorTheme.accent,
-    },
-  ];
-
   return (
     <section
-      className="py-20 px-4 sm:px-6 lg:px-8"
+      className="py-24 px-4 sm:px-6 lg:px-8"
       style={{ backgroundColor: colorTheme.background }}
     >
+      <style>{`
+        @keyframes aboutCorporateSlideIn {
+          from { opacity: 0; transform: translateX(-40px); }
+          to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes aboutCorporateSlideRight {
+          from { opacity: 0; transform: translateX(40px); }
+          to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes aboutAccentGrow {
+          from { width: 0; }
+          to { width: 80px; }
+        }
+      `}</style>
+
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          {/* Left: Text content */}
           <div
-            className="inline-block px-4 py-1 rounded-full text-sm font-semibold tracking-wide uppercase mb-4"
-            style={{
-              backgroundColor: `${colorTheme.primary}12`,
-              color: colorTheme.primary,
-            }}
+            className="space-y-8"
+            style={{ animation: "aboutCorporateSlideIn 0.8s ease-out both" }}
           >
-            About Us
-          </div>
-          <h2
-            className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight mb-4"
-            style={{ color: colorTheme.text }}
-          >
-            {c.title}
-          </h2>
-          <p
-            className="text-lg leading-relaxed"
-            style={{ color: `${colorTheme.text}aa` }}
-          >
-            {c.description}
-          </p>
-        </div>
-
-        {/* Cards grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {cards.map((card, i) => (
-            <div
-              key={i}
-              className="group relative p-8 rounded-2xl transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
-              style={{
-                backgroundColor: colorTheme.background,
-                border: `1px solid ${card.color}20`,
-                boxShadow: `0 4px 20px ${card.color}10`,
-              }}
-            >
-              {/* Icon */}
+            {/* Accent bar + label */}
+            <div className="flex items-center gap-4">
               <div
-                className="w-14 h-14 rounded-xl flex items-center justify-center mb-6"
+                className="h-1 rounded-full"
                 style={{
-                  backgroundColor: `${card.color}12`,
-                  color: card.color,
-                }}
-              >
-                {card.icon}
-              </div>
-
-              <h3
-                className="text-xl font-bold mb-3"
-                style={{ color: colorTheme.text }}
-              >
-                {card.title}
-              </h3>
-
-              <p
-                className="leading-relaxed"
-                style={{ color: `${colorTheme.text}aa` }}
-              >
-                {card.text}
-              </p>
-
-              {/* Bottom accent line */}
-              <div
-                className="absolute bottom-0 left-8 right-8 h-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                style={{
-                  background: `linear-gradient(90deg, ${card.color}, transparent)`,
+                  backgroundColor: colorTheme.primary,
+                  animation: "aboutAccentGrow 0.6s ease-out both",
                 }}
               />
+              <span
+                className="text-sm font-bold tracking-[0.2em] uppercase"
+                style={{ color: colorTheme.primary }}
+              >
+                About Us
+              </span>
             </div>
-          ))}
+
+            <h2
+              className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-[1.15]"
+              style={{ color: colorTheme.text }}
+            >
+              {c.title}
+            </h2>
+
+            <p
+              className="text-lg leading-relaxed"
+              style={{ color: `${colorTheme.text}99` }}
+            >
+              {c.description}
+            </p>
+
+            {/* Mission & Vision structured grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4">
+              {c.mission && (
+                <div
+                  className="relative pl-6 py-4"
+                  style={{
+                    borderLeft: `3px solid ${colorTheme.primary}`,
+                  }}
+                >
+                  <h4
+                    className="text-xs font-bold tracking-[0.15em] uppercase mb-2"
+                    style={{ color: colorTheme.primary }}
+                  >
+                    Mission
+                  </h4>
+                  <p
+                    className="text-sm leading-relaxed"
+                    style={{ color: `${colorTheme.text}aa` }}
+                  >
+                    {c.mission}
+                  </p>
+                </div>
+              )}
+
+              {c.vision && (
+                <div
+                  className="relative pl-6 py-4"
+                  style={{
+                    borderLeft: `3px solid ${colorTheme.accent}`,
+                  }}
+                >
+                  <h4
+                    className="text-xs font-bold tracking-[0.15em] uppercase mb-2"
+                    style={{ color: colorTheme.accent }}
+                  >
+                    Vision
+                  </h4>
+                  <p
+                    className="text-sm leading-relaxed"
+                    style={{ color: `${colorTheme.text}aa` }}
+                  >
+                    {c.vision}
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Right: Image placeholder */}
+          <div
+            className="relative"
+            style={{ animation: "aboutCorporateSlideRight 0.8s ease-out 0.2s both" }}
+          >
+            {/* Decorative corner accent */}
+            <div
+              className="absolute -top-4 -right-4 w-24 h-24 opacity-20"
+              style={{
+                borderTop: `4px solid ${colorTheme.primary}`,
+                borderRight: `4px solid ${colorTheme.primary}`,
+              }}
+            />
+
+            <div
+              className="relative w-full aspect-[4/5] rounded-2xl overflow-hidden"
+              style={{
+                background: c.image
+                  ? `url(${c.image}) center/cover no-repeat`
+                  : `linear-gradient(160deg, ${colorTheme.primary}12, ${colorTheme.secondary}18, ${colorTheme.accent}12)`,
+              }}
+            >
+              {!c.image && (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  {/* Grid pattern overlay */}
+                  <div
+                    className="absolute inset-0 opacity-[0.04]"
+                    style={{
+                      backgroundImage: `linear-gradient(${colorTheme.primary} 1px, transparent 1px), linear-gradient(90deg, ${colorTheme.primary} 1px, transparent 1px)`,
+                      backgroundSize: "40px 40px",
+                    }}
+                  />
+                  <svg
+                    className="w-24 h-24 opacity-15"
+                    fill={colorTheme.primary}
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z" />
+                  </svg>
+                </div>
+              )}
+
+              {/* Bottom stat bar */}
+              <div
+                className="absolute bottom-0 left-0 right-0 px-6 py-5"
+                style={{
+                  background: `linear-gradient(to top, ${colorTheme.primary}dd, ${colorTheme.primary}00)`,
+                }}
+              >
+                <div className="flex items-center justify-between text-white">
+                  <div>
+                    <div className="text-2xl font-bold">20+</div>
+                    <div className="text-xs opacity-80">Years of Excellence</div>
+                  </div>
+                  <div
+                    className="w-px h-10 opacity-30"
+                    style={{ backgroundColor: "#ffffff" }}
+                  />
+                  <div>
+                    <div className="text-2xl font-bold">50K+</div>
+                    <div className="text-xs opacity-80">Alumni Network</div>
+                  </div>
+                  <div
+                    className="w-px h-10 opacity-30"
+                    style={{ backgroundColor: "#ffffff" }}
+                  />
+                  <div>
+                    <div className="text-2xl font-bold">100%</div>
+                    <div className="text-xs opacity-80">Commitment</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom-left decorative corner */}
+            <div
+              className="absolute -bottom-4 -left-4 w-24 h-24 opacity-20"
+              style={{
+                borderBottom: `4px solid ${colorTheme.accent}`,
+                borderLeft: `4px solid ${colorTheme.accent}`,
+              }}
+            />
+          </div>
         </div>
       </div>
     </section>

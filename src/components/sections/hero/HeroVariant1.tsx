@@ -12,153 +12,217 @@ interface SectionProps {
     text: string;
     name: string;
   };
-  designVariant: number;
+  designVariant?: number;
 }
 
 const defaults = {
-  title: "Empowering Education, Shaping Futures",
-  subtitle:
-    "Discover world-class learning experiences designed to unlock your full potential and prepare you for tomorrow's challenges.",
-  ctaText: "Get Started",
+  title: "\u09AD\u09B0\u09CD\u09A4\u09BF \u09AA\u09B0\u09C0\u0995\u09CD\u09B7\u09BE\u09B0 \u09AA\u09CD\u09B0\u09B8\u09CD\u09A4\u09C1\u09A4\u09BF \u09A8\u09BE\u0993 \u09B8\u09C7\u09B0\u09BE\u09A6\u09C7\u09B0 \u09B8\u09BE\u09A5\u09C7",
+  subtitle: "Prepare for Admission Tests with the Best",
+  ctaText: "\u098F\u0996\u09A8\u0987 \u09AD\u09B0\u09CD\u09A4\u09BF \u09B9\u09CB\u09A8",
   ctaLink: "#",
   backgroundImage: "",
+  stats: [] as { label: string; value: string }[],
 };
 
 export default function HeroVariant1({ content, colorTheme }: SectionProps) {
   const c = { ...defaults, ...content };
+  const stats: { label: string; value: string }[] =
+    c.stats && c.stats.length > 0
+      ? c.stats
+      : [
+          { value: "10,000+", label: "Students" },
+          { value: "95%", label: "Success" },
+          { value: "200+", label: "Courses" },
+          { value: "50+", label: "Mentors" },
+        ];
 
   return (
     <section
       className="relative flex items-center justify-center overflow-hidden"
-      style={{
-        minHeight: "85vh",
-        background: c.backgroundImage
-          ? `url(${c.backgroundImage}) center/cover no-repeat`
-          : `linear-gradient(135deg, ${colorTheme.primary} 0%, ${colorTheme.secondary} 50%, ${colorTheme.accent} 100%)`,
-      }}
+      style={{ minHeight: "80vh" }}
     >
-      {/* Animated blobs */}
+      {/* --- Scoped keyframes --- */}
+      <style>{`
+        @keyframes hero1-mesh {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          25% { transform: translate(30px, -50px) scale(1.1); }
+          50% { transform: translate(-20px, 20px) scale(0.95); }
+          75% { transform: translate(10px, 40px) scale(1.05); }
+        }
+        @keyframes hero1-orb {
+          0%, 100% { transform: translateY(0) scale(1); opacity: 0.5; }
+          50% { transform: translateY(-40px) scale(1.15); opacity: 0.8; }
+        }
+        @keyframes hero1-orb2 {
+          0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.4; }
+          33% { transform: translate(25px, -30px) scale(1.1); opacity: 0.7; }
+          66% { transform: translate(-15px, 20px) scale(0.9); opacity: 0.5; }
+        }
+        @keyframes hero1-float-pill {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-12px); }
+        }
+        @keyframes hero1-glow-pulse {
+          0%, 100% { box-shadow: 0 0 20px var(--glow-color), 0 0 60px var(--glow-color); }
+          50% { box-shadow: 0 0 30px var(--glow-color), 0 0 80px var(--glow-color); }
+        }
+      `}</style>
+
+      {/* Animated gradient mesh background */}
+      <div className="absolute inset-0" style={{ backgroundColor: "#0f0f1a" }}>
+        {/* Mesh gradient blobs */}
+        <div
+          className="absolute w-[600px] h-[600px] rounded-full blur-[120px]"
+          style={{
+            background: `radial-gradient(circle, ${colorTheme.primary}88 0%, transparent 70%)`,
+            top: "-10%",
+            left: "-5%",
+            animation: "hero1-mesh 12s ease-in-out infinite",
+          }}
+        />
+        <div
+          className="absolute w-[500px] h-[500px] rounded-full blur-[100px]"
+          style={{
+            background: `radial-gradient(circle, ${colorTheme.secondary}77 0%, transparent 70%)`,
+            top: "30%",
+            right: "-10%",
+            animation: "hero1-mesh 15s ease-in-out infinite reverse",
+          }}
+        />
+        <div
+          className="absolute w-[400px] h-[400px] rounded-full blur-[90px]"
+          style={{
+            background: `radial-gradient(circle, ${colorTheme.accent}66 0%, transparent 70%)`,
+            bottom: "-5%",
+            left: "30%",
+            animation: "hero1-mesh 10s ease-in-out infinite",
+            animationDelay: "3s",
+          }}
+        />
+      </div>
+
+      {/* Subtle grid pattern overlay */}
       <div
-        className="absolute w-96 h-96 opacity-20 animate-blob blur-xl"
+        className="absolute inset-0 opacity-[0.04]"
         style={{
-          backgroundColor: colorTheme.primary,
-          top: '5%',
-          left: '10%',
-          animationDelay: '0s',
-        }}
-      />
-      <div
-        className="absolute w-80 h-80 opacity-15 animate-blob blur-xl"
-        style={{
-          backgroundColor: colorTheme.accent,
-          top: '40%',
-          right: '5%',
-          animationDelay: '2s',
-        }}
-      />
-      <div
-        className="absolute w-72 h-72 opacity-10 animate-blob blur-xl"
-        style={{
-          backgroundColor: colorTheme.secondary,
-          bottom: '5%',
-          left: '30%',
-          animationDelay: '4s',
+          backgroundImage:
+            "linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)",
+          backgroundSize: "60px 60px",
         }}
       />
 
-      {/* Floating particle dots */}
+      {/* Floating orbs */}
       {[
-        { top: '15%', left: '20%', delay: '0s', size: 'w-2 h-2' },
-        { top: '30%', right: '25%', delay: '1s', size: 'w-3 h-3' },
-        { top: '60%', left: '12%', delay: '2s', size: 'w-2 h-2' },
-        { top: '25%', left: '70%', delay: '3s', size: 'w-1.5 h-1.5' },
-        { top: '70%', right: '15%', delay: '4s', size: 'w-2 h-2' },
-        { top: '45%', left: '5%', delay: '5s', size: 'w-1.5 h-1.5' },
-        { top: '80%', left: '60%', delay: '1.5s', size: 'w-2.5 h-2.5' },
-        { top: '10%', right: '10%', delay: '3.5s', size: 'w-2 h-2' },
-      ].map((dot, i) => (
+        { top: "12%", left: "8%", size: 16, delay: "0s", dur: "7s" },
+        { top: "20%", right: "12%", size: 12, delay: "1s", dur: "8s" },
+        { bottom: "25%", left: "15%", size: 10, delay: "2s", dur: "6s" },
+        { top: "55%", right: "20%", size: 14, delay: "0.5s", dur: "9s" },
+        { bottom: "15%", right: "10%", size: 8, delay: "3s", dur: "7s" },
+        { top: "40%", left: "5%", size: 6, delay: "1.5s", dur: "8s" },
+      ].map((orb, i) => (
         <div
           key={i}
-          className={`absolute ${dot.size} rounded-full bg-white/30 animate-float`}
+          className="absolute rounded-full"
           style={{
-            top: dot.top,
-            left: dot.left,
-            right: dot.right,
-            animationDelay: dot.delay,
+            width: orb.size,
+            height: orb.size,
+            top: orb.top,
+            left: orb.left,
+            right: orb.right,
+            bottom: orb.bottom,
+            background: `radial-gradient(circle, ${i % 2 === 0 ? colorTheme.primary : colorTheme.accent}cc, ${i % 2 === 0 ? colorTheme.primary : colorTheme.accent}33)`,
+            animation: `${i % 2 === 0 ? "hero1-orb" : "hero1-orb2"} ${orb.dur} ease-in-out infinite`,
+            animationDelay: orb.delay,
+            boxShadow: `0 0 ${orb.size * 2}px ${i % 2 === 0 ? colorTheme.primary : colorTheme.accent}55`,
           }}
         />
       ))}
 
-      {/* Grid/dot pattern overlay */}
-      <div
-        className="absolute inset-0 opacity-10"
-        style={{
-          backgroundImage:
-            "radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px)",
-          backgroundSize: "24px 24px",
-        }}
-      />
-
-      {/* Dark overlay for readability */}
-      <div className="absolute inset-0 bg-black/30" />
-
-      {/* Content */}
-      <div className="relative z-10 max-w-4xl mx-auto px-6 py-20 text-center">
-        <h1
-          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-tight mb-6 tracking-tight"
-          style={{ color: "#ffffff" }}
+      {/* Content container */}
+      <div className="relative z-10 w-full max-w-5xl mx-auto px-5 sm:px-8 py-16 sm:py-20 flex flex-col items-center">
+        {/* Frosted glass card */}
+        <div
+          className="w-full max-w-3xl rounded-3xl px-6 sm:px-12 py-10 sm:py-14 text-center"
+          style={{
+            background: "rgba(255, 255, 255, 0.05)",
+            backdropFilter: "blur(24px)",
+            WebkitBackdropFilter: "blur(24px)",
+            border: "1px solid rgba(255, 255, 255, 0.1)",
+            boxShadow:
+              "0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1)",
+          }}
         >
-          <span
-            className="bg-clip-text text-transparent animate-gradient"
+          {/* Title with gradient text */}
+          <h1
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-5 tracking-tight"
             style={{
-              backgroundImage: `linear-gradient(135deg, #ffffff, ${colorTheme.accent}, #ffffff)`,
-              backgroundSize: '200% 200%',
+              background: `linear-gradient(135deg, ${colorTheme.primary}, ${colorTheme.accent}, ${colorTheme.primary})`,
+              backgroundSize: "200% 200%",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+              animation: "gradient-shift 6s ease infinite",
             }}
           >
             {c.title}
-          </span>
-        </h1>
+          </h1>
 
-        <p
-          className="text-lg sm:text-xl md:text-2xl leading-relaxed mb-10 max-w-2xl mx-auto font-light"
-          style={{ color: "rgba(255,255,255,0.9)" }}
-        >
-          {c.subtitle}
-        </p>
+          {/* Subtitle */}
+          <p
+            className="text-base sm:text-lg md:text-xl leading-relaxed mb-8 max-w-xl mx-auto font-light"
+            style={{ color: "rgba(255,255,255,0.7)" }}
+          >
+            {c.subtitle}
+          </p>
 
-        <div className="flex flex-wrap gap-4 justify-center">
+          {/* CTA button with glass + glow */}
           <a
             href={c.ctaLink}
-            className="inline-block px-10 py-4 rounded-full text-lg font-semibold transition-all duration-300 hover:scale-105 hover:shadow-2xl shadow-lg"
-            style={{
-              backgroundColor: colorTheme.accent,
-              color: "#ffffff",
-              boxShadow: `0 8px 30px ${colorTheme.accent}66`,
-            }}
+            className="inline-block px-8 sm:px-10 py-3.5 sm:py-4 rounded-full text-base sm:text-lg font-semibold transition-all duration-300 hover:scale-105"
+            style={
+              {
+                background: `linear-gradient(135deg, ${colorTheme.primary}cc, ${colorTheme.accent}cc)`,
+                backdropFilter: "blur(8px)",
+                color: "#ffffff",
+                border: "1px solid rgba(255,255,255,0.15)",
+                "--glow-color": `${colorTheme.primary}44`,
+                animation: "hero1-glow-pulse 3s ease-in-out infinite",
+              } as React.CSSProperties
+            }
           >
             {c.ctaText}
           </a>
-          <a
-            href="#"
-            className="inline-block px-10 py-4 rounded-full text-lg font-semibold transition-all duration-300 hover:scale-105 glassmorphism text-white hover:bg-white/20"
-          >
-            Learn More
-          </a>
         </div>
 
-        {/* Animated SVG wave at bottom */}
-        <div className="absolute bottom-0 left-0 right-0">
-          <svg
-            viewBox="0 0 1440 120"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-full"
-          >
-            <path
-              d="M0,64L48,69.3C96,75,192,85,288,80C384,75,480,53,576,48C672,43,768,53,864,64C960,75,1056,85,1152,80C1248,75,1344,53,1392,42.7L1440,32L1440,120L1392,120C1344,120,1248,120,1152,120C1056,120,960,120,864,120C768,120,672,120,576,120C480,120,384,120,288,120C192,120,96,120,48,120L0,120Z"
-              fill={colorTheme.background}
-            />
-          </svg>
+        {/* Stats pills floating around the card */}
+        <div className="flex flex-wrap justify-center gap-3 sm:gap-4 mt-8 sm:mt-10">
+          {stats.map((stat, i) => (
+            <div
+              key={i}
+              className="px-5 py-3 rounded-2xl text-center"
+              style={{
+                background: "rgba(255, 255, 255, 0.06)",
+                backdropFilter: "blur(16px)",
+                WebkitBackdropFilter: "blur(16px)",
+                border: "1px solid rgba(255, 255, 255, 0.08)",
+                animation: `hero1-float-pill 4s ease-in-out infinite`,
+                animationDelay: `${i * 0.5}s`,
+              }}
+            >
+              <div
+                className="text-xl sm:text-2xl font-bold"
+                style={{ color: colorTheme.accent }}
+              >
+                {stat.value}
+              </div>
+              <div
+                className="text-xs sm:text-sm mt-0.5"
+                style={{ color: "rgba(255,255,255,0.5)" }}
+              >
+                {stat.label}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </section>

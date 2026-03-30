@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { temporal } from 'zundo';
 import { Course, Enrollment, EnrollmentStats, Exam, Notice, Payment, Promo, Result, ResultStats, Schedule, Site, SitePage, SiteSection, Teacher, User } from './types';
 
 export type BuilderTab = 'pages' | 'sections' | 'courses' | 'teachers' | 'promos' | 'exams' | 'enrollments' | 'schedules' | 'results' | 'notices' | 'payments';
@@ -48,135 +49,147 @@ interface AppState {
   initAuth: () => void;
 }
 
-export const useAppStore = create<AppState>((set) => ({
-  user: null,
-  token: null,
-  currentSite: null,
-  sections: [],
-  selectedSectionId: null,
-  activeBuilderTab: 'sections',
-  courses: [],
-  teachers: [],
-  promos: [],
-  enrollments: [],
-  enrollmentStats: null,
-  schedules: [],
-  results: [],
-  resultStats: null,
-  notices: [],
-  pages: [],
-  selectedPageId: null,
-  exams: [],
-  payments: [],
-
-  login: (token: string, user: User) => {
-    localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(user));
-    set({ token, user });
-  },
-
-  logout: () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    set({ user: null, token: null, currentSite: null, sections: [], selectedSectionId: null });
-  },
-
-  setCurrentSite: (site: Site | null) => {
-    set({
-      currentSite: site,
-      sections: site?.sections ?? [],
+export const useAppStore = create<AppState>()(
+  temporal(
+    (set) => ({
+      user: null,
+      token: null,
+      currentSite: null,
+      sections: [],
       selectedSectionId: null,
-    });
-  },
+      activeBuilderTab: 'sections' as BuilderTab,
+      courses: [],
+      teachers: [],
+      promos: [],
+      enrollments: [],
+      enrollmentStats: null,
+      schedules: [],
+      results: [],
+      resultStats: null,
+      notices: [],
+      pages: [],
+      selectedPageId: null,
+      exams: [],
+      payments: [],
 
-  setSections: (sections: SiteSection[]) => {
-    set({ sections });
-  },
-
-  selectSection: (id: string | null) => {
-    set({ selectedSectionId: id });
-  },
-
-  updateSectionInStore: (id: string, updates: Partial<SiteSection>) => {
-    set((state) => ({
-      sections: state.sections.map((s) =>
-        s.id === id ? { ...s, ...updates } : s
-      ),
-    }));
-  },
-
-  reorderSectionsInStore: (sections: SiteSection[]) => {
-    set({ sections });
-  },
-
-  setActiveBuilderTab: (tab: BuilderTab) => {
-    set({ activeBuilderTab: tab });
-  },
-
-  setCourses: (courses: Course[]) => {
-    set({ courses });
-  },
-
-  setTeachers: (teachers: Teacher[]) => {
-    set({ teachers });
-  },
-
-  setPromos: (promos: Promo[]) => {
-    set({ promos });
-  },
-
-  setEnrollments: (enrollments: Enrollment[]) => {
-    set({ enrollments });
-  },
-
-  setEnrollmentStats: (stats: EnrollmentStats | null) => {
-    set({ enrollmentStats: stats });
-  },
-
-  setSchedules: (schedules: Schedule[]) => {
-    set({ schedules });
-  },
-
-  setResults: (results: Result[]) => {
-    set({ results });
-  },
-
-  setResultStats: (stats: ResultStats | null) => {
-    set({ resultStats: stats });
-  },
-
-  setNotices: (notices: Notice[]) => {
-    set({ notices });
-  },
-
-  setPages: (pages: SitePage[]) => {
-    set({ pages });
-  },
-
-  selectPage: (pageId: string | null) => {
-    set({ selectedPageId: pageId });
-  },
-
-  setExams: (exams: Exam[]) => {
-    set({ exams });
-  },
-
-  setPayments: (payments: Payment[]) => {
-    set({ payments });
-  },
-
-  initAuth: () => {
-    if (typeof window === 'undefined') return;
-    const token = localStorage.getItem('token');
-    const userJson = localStorage.getItem('user');
-    if (token && userJson) {
-      try {
-        const user = JSON.parse(userJson) as User;
+      login: (token: string, user: User) => {
+        localStorage.setItem('token', token);
+        localStorage.setItem('user', JSON.stringify(user));
         set({ token, user });
-      } catch {
+      },
+
+      logout: () => {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
-      }
+        set({ user: null, token: null, currentSite: null, sections: [], selectedSectionId: null });
+      },
+
+      setCurrentSite: (site: Site | null) => {
+        set({
+          currentSite: site,
+          sections: site?.sections ?? [],
+          selectedSectionId: null,
+        });
+      },
+
+      setSections: (sections: SiteSection[]) => {
+        set({ sections });
+      },
+
+      selectSection: (id: string | null) => {
+        set({ selectedSectionId: id });
+      },
+
+      updateSectionInStore: (id: string, updates: Partial<SiteSection>) => {
+        set((state) => ({
+          sections: state.sections.map((s) =>
+            s.id === id ? { ...s, ...updates } : s
+          ),
+        }));
+      },
+
+      reorderSectionsInStore: (sections: SiteSection[]) => {
+        set({ sections });
+      },
+
+      setActiveBuilderTab: (tab: BuilderTab) => {
+        set({ activeBuilderTab: tab });
+      },
+
+      setCourses: (courses: Course[]) => {
+        set({ courses });
+      },
+
+      setTeachers: (teachers: Teacher[]) => {
+        set({ teachers });
+      },
+
+      setPromos: (promos: Promo[]) => {
+        set({ promos });
+      },
+
+      setEnrollments: (enrollments: Enrollment[]) => {
+        set({ enrollments });
+      },
+
+      setEnrollmentStats: (stats: EnrollmentStats | null) => {
+        set({ enrollmentStats: stats });
+      },
+
+      setSchedules: (schedules: Schedule[]) => {
+        set({ schedules });
+      },
+
+      setResults: (results: Result[]) => {
+        set({ results });
+      },
+
+      setResultStats: (stats: ResultStats | null) => {
+        set({ resultStats: stats });
+      },
+
+      setNotices: (notices: Notice[]) => {
+        set({ notices });
+      },
+
+      setPages: (pages: SitePage[]) => {
+        set({ pages });
+      },
+
+      selectPage: (pageId: string | null) => {
+        set({ selectedPageId: pageId });
+      },
+
+      setExams: (exams: Exam[]) => {
+        set({ exams });
+      },
+
+      setPayments: (payments: Payment[]) => {
+        set({ payments });
+      },
+
+      initAuth: () => {
+        if (typeof window === 'undefined') return;
+        const token = localStorage.getItem('token');
+        const userJson = localStorage.getItem('user');
+        if (token && userJson) {
+          try {
+            const user = JSON.parse(userJson) as User;
+            set({ token, user });
+          } catch {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+          }
+        }
+      },
+    }),
+    {
+      // Only track changes to sections and currentSite for undo/redo
+      partialize: (state) => ({
+        sections: state.sections,
+        currentSite: state.currentSite,
+      }),
+      limit: 50,
     }
-  },
-}));
+  )
+);

@@ -18,15 +18,15 @@ interface SectionProps {
 }
 
 const defaultCourses = [
-  { name: "Science", description: "Comprehensive science program covering Physics, Chemistry, and Biology with practical lab work.", duration: "2 Years", fee: "BDT 50,000/yr" },
-  { name: "Commerce", description: "Business-focused curriculum with Accounting, Finance, and Economics for future entrepreneurs.", duration: "2 Years", fee: "BDT 45,000/yr" },
-  { name: "Arts & Humanities", description: "Broad curriculum exploring Literature, History, and Social Sciences.", duration: "2 Years", fee: "BDT 40,000/yr" },
-  { name: "Computer Science", description: "Modern technology curriculum with programming, web development, and data science.", duration: "2 Years", fee: "BDT 55,000/yr" },
+  { name: "বিজ্ঞান বিভাগ", description: "পদার্থবিদ্যা, রসায়ন ও জীববিদ্যা সহ ব্যবহারিক ল্যাব ওয়ার্ক।", duration: "২ বছর", fee: "৳৫০,০০০/বছর" },
+  { name: "ব্যবসায় শিক্ষা", description: "হিসাববিজ্ঞান, অর্থনীতি ও ব্যবসায় উদ্যোগ কেন্দ্রিক পাঠ্যক্রম।", duration: "২ বছর", fee: "৳৪৫,০০০/বছর" },
+  { name: "কলা বিভাগ", description: "সাহিত্য, ইতিহাস ও সমাজবিজ্ঞান নিয়ে সমৃদ্ধ পাঠ্যক্রম।", duration: "২ বছর", fee: "৳৪০,০০০/বছর" },
+  { name: "কম্পিউটার সায়েন্স", description: "প্রোগ্রামিং, ওয়েব ডেভেলপমেন্ট ও ডেটা সায়েন্স।", duration: "২ বছর", fee: "৳৫৫,০০০/বছর" },
 ];
 
 const defaults = {
-  title: "Our Programs",
-  subtitle: "Explore our comprehensive range of academic programs designed to prepare students for success.",
+  title: "আমাদের প্রোগ্রামসমূহ",
+  subtitle: "শিক্ষার্থীদের সাফল্যের জন্য ডিজাইন করা আমাদের একাডেমিক প্রোগ্রামগুলো দেখুন।",
   courses: defaultCourses,
 };
 
@@ -35,11 +35,16 @@ function mapDynamicCourses(dynamicCourses: Course[]): { name: string; descriptio
     name: c.title,
     description: c.description || "",
     duration: c.duration || "",
-    fee: c.fee !== null ? `\u09F3${c.fee.toLocaleString()}` : "",
+    fee: c.fee !== null ? `৳${c.fee.toLocaleString()}` : "",
     category: c.category,
   }));
 }
 
+/* ──────────────────────────────────────────────
+   Variant 2 — Corporate List
+   Clean structured list with borders, fee
+   aligned right, hover highlight row
+   ────────────────────────────────────────────── */
 export default function CoursesVariant2({ content, colorTheme, courses: dynamicCourses }: SectionProps) {
   const c = { ...defaults, ...content };
   const hasDynamic = dynamicCourses && dynamicCourses.length > 0;
@@ -47,123 +52,174 @@ export default function CoursesVariant2({ content, colorTheme, courses: dynamicC
 
   return (
     <section
-      className="py-20 px-4 sm:px-6 lg:px-8"
+      className="py-24 px-4 sm:px-6 lg:px-8"
       style={{ backgroundColor: colorTheme.background }}
     >
-      <div className="max-w-6xl mx-auto">
+      <style>{`
+        @keyframes cv2SlideIn {
+          from { opacity: 0; transform: translateX(-20px); }
+          to { opacity: 1; transform: translateX(0); }
+        }
+        .cv2-row {
+          animation: cv2SlideIn 0.5s ease-out both;
+        }
+        .cv2-row:nth-child(1) { animation-delay: 0.05s; }
+        .cv2-row:nth-child(2) { animation-delay: 0.1s; }
+        .cv2-row:nth-child(3) { animation-delay: 0.15s; }
+        .cv2-row:nth-child(4) { animation-delay: 0.2s; }
+        .cv2-row:nth-child(5) { animation-delay: 0.25s; }
+        .cv2-row:nth-child(6) { animation-delay: 0.3s; }
+      `}</style>
+
+      <div className="max-w-5xl mx-auto">
         {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <div
-            className="inline-block px-4 py-1 rounded-full text-sm font-semibold tracking-wide uppercase mb-4"
-            style={{
-              backgroundColor: `${colorTheme.primary}12`,
-              color: colorTheme.primary,
-            }}
-          >
-            Programs
+        <div className="mb-16">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-[2px] rounded-full" style={{ backgroundColor: colorTheme.primary }} />
+            <span className="text-xs font-bold tracking-widest uppercase" style={{ color: colorTheme.primary }}>
+              প্রোগ্রামসমূহ
+            </span>
           </div>
           <h2
-            className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight mb-4"
+            className="text-4xl sm:text-5xl font-extrabold leading-tight mb-4 tracking-tight"
             style={{ color: colorTheme.text }}
           >
             {c.title}
           </h2>
           <p
-            className="text-lg leading-relaxed"
-            style={{ color: `${colorTheme.text}aa` }}
+            className="text-lg max-w-2xl leading-relaxed"
+            style={{ color: `${colorTheme.text}88` }}
           >
             {c.subtitle}
           </p>
         </div>
 
-        {/* List items */}
-        <div className="space-y-4">
+        {/* Table header */}
+        <div
+          className="hidden sm:grid grid-cols-12 gap-4 px-6 py-3 text-xs font-bold tracking-widest uppercase mb-2"
+          style={{ color: `${colorTheme.text}55` }}
+        >
+          <div className="col-span-1">#</div>
+          <div className="col-span-3">প্রোগ্রাম</div>
+          <div className="col-span-4">বিবরণ</div>
+          <div className="col-span-2 text-center">সময়কাল</div>
+          <div className="col-span-2 text-right">ফি</div>
+        </div>
+
+        <div
+          className="w-full h-px mb-1"
+          style={{ backgroundColor: `${colorTheme.text}12` }}
+        />
+
+        {/* List rows */}
+        <div>
           {courses.map((course: any, i: number) => (
             <div
               key={i}
-              className="group flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-8 p-6 rounded-2xl transition-all duration-300 hover:shadow-lg"
+              className="cv2-row group grid grid-cols-1 sm:grid-cols-12 gap-3 sm:gap-4 items-center px-6 py-5 transition-all duration-300 rounded-xl hover:scale-[1.01] cursor-pointer"
               style={{
-                backgroundColor:
-                  i % 2 === 0 ? `${colorTheme.primary}06` : colorTheme.background,
-                border: `1px solid ${colorTheme.primary}10`,
+                borderBottom: `1px solid ${colorTheme.text}08`,
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLElement).style.backgroundColor = `${colorTheme.primary}06`;
+                (e.currentTarget as HTMLElement).style.boxShadow = `0 2px 20px ${colorTheme.primary}08`;
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLElement).style.backgroundColor = "transparent";
+                (e.currentTarget as HTMLElement).style.boxShadow = "none";
               }}
             >
               {/* Number */}
               <div
-                className="w-12 h-12 rounded-xl flex items-center justify-center text-lg font-bold flex-shrink-0"
+                className="hidden sm:flex col-span-1 w-8 h-8 rounded-lg items-center justify-center text-xs font-bold"
                 style={{
-                  backgroundColor: `${colorTheme.primary}12`,
+                  backgroundColor: `${colorTheme.primary}08`,
                   color: colorTheme.primary,
                 }}
               >
                 {String(i + 1).padStart(2, "0")}
               </div>
 
-              {/* Course name */}
-              <h3
-                className="text-lg font-bold flex-shrink-0 min-w-[160px]"
-                style={{ color: colorTheme.text }}
-              >
-                {course.name}
-              </h3>
+              {/* Name + category */}
+              <div className="sm:col-span-3">
+                <div className="flex items-center gap-2">
+                  <h3 className="text-base font-bold" style={{ color: colorTheme.text }}>
+                    {course.name}
+                  </h3>
+                  {course.category && (
+                    <span
+                      className="text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded"
+                      style={{
+                        backgroundColor: `${colorTheme.secondary}12`,
+                        color: colorTheme.secondary,
+                      }}
+                    >
+                      {course.category}
+                    </span>
+                  )}
+                </div>
+              </div>
 
               {/* Description */}
               <p
-                className="flex-1 text-sm leading-relaxed"
-                style={{ color: `${colorTheme.text}99` }}
+                className="sm:col-span-4 text-sm leading-relaxed line-clamp-2"
+                style={{ color: `${colorTheme.text}77` }}
               >
                 {course.description}
               </p>
 
-              {/* Duration & Fee */}
-              <div className="flex items-center gap-3 flex-shrink-0">
-                {course.category && (
-                  <span
-                    className="text-[10px] font-bold px-2.5 py-1 rounded-lg uppercase"
-                    style={{
-                      backgroundColor: `${colorTheme.primary}10`,
-                      color: colorTheme.primary,
-                    }}
-                  >
-                    {course.category}
-                  </span>
-                )}
+              {/* Duration */}
+              <div className="sm:col-span-2 text-center">
                 {course.duration && (
                   <span
-                    className="text-xs font-medium px-3 py-1.5 rounded-lg"
+                    className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg"
                     style={{
-                      backgroundColor: `${colorTheme.secondary}15`,
-                      color: colorTheme.secondary,
+                      backgroundColor: `${colorTheme.text}06`,
+                      color: `${colorTheme.text}88`,
                     }}
                   >
+                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg>
                     {course.duration}
                   </span>
                 )}
+              </div>
+
+              {/* Fee — aligned right */}
+              <div className="sm:col-span-2 text-right">
                 {course.fee && (
                   <span
-                    className="text-xs font-bold px-3 py-1.5 rounded-lg"
-                    style={{
-                      backgroundColor: `${colorTheme.accent}15`,
-                      color: colorTheme.accent,
-                    }}
+                    className="text-base font-extrabold tabular-nums"
+                    style={{ color: colorTheme.accent }}
                   >
                     {course.fee}
                   </span>
                 )}
               </div>
 
-              {/* Arrow */}
+              {/* Arrow (desktop) */}
               <svg
-                className="w-5 h-5 flex-shrink-0 transition-transform duration-300 group-hover:translate-x-1 hidden sm:block"
+                className="hidden sm:block absolute right-6 w-4 h-4 opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:translate-x-1"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke={colorTheme.primary}
                 strokeWidth={2}
               >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
               </svg>
             </div>
           ))}
+        </div>
+
+        {/* Bottom accent bar */}
+        <div className="mt-8 flex justify-center">
+          <div
+            className="w-24 h-1 rounded-full"
+            style={{
+              background: `linear-gradient(90deg, ${colorTheme.primary}, ${colorTheme.accent})`,
+            }}
+          />
         </div>
       </div>
     </section>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import type { Course } from "@/lib/types";
 
 interface SectionProps {
@@ -18,15 +18,17 @@ interface SectionProps {
 }
 
 const defaultCourses = [
-  { name: "Science", description: "Comprehensive science program covering Physics, Chemistry, and Biology with practical lab work. Students engage in hands-on experiments and research projects that develop critical thinking and analytical skills.", duration: "2 Years", fee: "BDT 50,000/yr" },
-  { name: "Commerce", description: "Business-focused curriculum with Accounting, Finance, and Economics for future entrepreneurs. Includes real-world case studies and business simulation projects.", duration: "2 Years", fee: "BDT 45,000/yr" },
-  { name: "Arts & Humanities", description: "Broad curriculum exploring Literature, History, and Social Sciences for well-rounded education. Encourages creative expression and critical analysis of culture and society.", duration: "2 Years", fee: "BDT 40,000/yr" },
-  { name: "Computer Science", description: "Modern technology curriculum with programming, web development, and data science. Hands-on projects with industry-standard tools and technologies.", duration: "2 Years", fee: "BDT 55,000/yr" },
+  { name: "বিজ্ঞান বিভাগ", description: "পদার্থবিদ্যা, রসায়ন ও জীববিদ্যা সহ ব্যবহারিক ল্যাব ওয়ার্ক।", duration: "২ বছর", fee: "৳৫০,০০০/বছর" },
+  { name: "ব্যবসায় শিক্ষা", description: "হিসাববিজ্ঞান, অর্থনীতি ও ব্যবসায় উদ্যোগ কেন্দ্রিক পাঠ্যক্রম।", duration: "২ বছর", fee: "৳৪৫,০০০/বছর" },
+  { name: "কলা বিভাগ", description: "সাহিত্য, ইতিহাস ও সমাজবিজ্ঞান নিয়ে সমৃদ্ধ পাঠ্যক্রম।", duration: "২ বছর", fee: "৳৪০,০০০/বছর" },
+  { name: "কম্পিউটার সায়েন্স", description: "প্রোগ্রামিং, ওয়েব ডেভেলপমেন্ট ও ডেটা সায়েন্স।", duration: "২ বছর", fee: "৳৫৫,০০০/বছর" },
+  { name: "ইঞ্জিনিয়ারিং প্রস্তুতি", description: "উচ্চতর গণিত ও পদার্থবিদ্যা কেন্দ্রিক নিবিড় প্রস্তুতি।", duration: "১ বছর", fee: "৳৬০,০০০/বছর" },
+  { name: "মেডিকেল প্রস্তুতি", description: "জীববিদ্যা ও রসায়ন কেন্দ্রিক ভর্তি পরীক্ষা প্রস্তুতি।", duration: "১ বছর", fee: "৳৬৫,০০০/বছর" },
 ];
 
 const defaults = {
-  title: "Our Programs",
-  subtitle: "Explore our comprehensive range of academic programs.",
+  title: "আমাদের প্রোগ্রামসমূহ",
+  subtitle: "শিক্ষার্থীদের সাফল্যের জন্য ডিজাইন করা আমাদের একাডেমিক প্রোগ্রামগুলো দেখুন।",
   courses: defaultCourses,
 };
 
@@ -35,203 +37,148 @@ function mapDynamicCourses(dynamicCourses: Course[]): { name: string; descriptio
     name: c.title,
     description: c.description || "",
     duration: c.duration || "",
-    fee: c.fee !== null ? `\u09F3${c.fee.toLocaleString()}` : "",
+    fee: c.fee !== null ? `৳${c.fee.toLocaleString()}` : "",
     category: c.category,
   }));
 }
 
+/* Bento gradient palettes */
+const tileGradients = [
+  ["#667eea", "#764ba2"],
+  ["#f093fb", "#f5576c"],
+  ["#4facfe", "#00f2fe"],
+  ["#43e97b", "#38f9d7"],
+  ["#fa709a", "#fee140"],
+  ["#a18cd1", "#fbc2eb"],
+  ["#fccb90", "#d57eeb"],
+  ["#e0c3fc", "#8ec5fc"],
+];
+
+/* ──────────────────────────────────────────────
+   Variant 3 — Colorful Tiles
+   Bento/tile layout, each course a different
+   gradient, large typography
+   ────────────────────────────────────────────── */
 export default function CoursesVariant3({ content, colorTheme, courses: dynamicCourses }: SectionProps) {
   const c = { ...defaults, ...content };
   const hasDynamic = dynamicCourses && dynamicCourses.length > 0;
   const courses = hasDynamic ? mapDynamicCourses(dynamicCourses) : (c.courses?.length ? c.courses : defaultCourses);
-  const [activeTab, setActiveTab] = useState(0);
-  const activeCourse: any = courses[activeTab] || courses[0];
+
+  /* Dynamic bento sizing — alternate large/small tiles */
+  const getSpanClass = (i: number, total: number): string => {
+    if (total <= 3) return "col-span-1";
+    // First and last items can be wide
+    if (i === 0) return "md:col-span-2";
+    if (total >= 5 && i === 3) return "md:col-span-2";
+    return "col-span-1";
+  };
 
   return (
     <section
-      className="py-20 px-4 sm:px-6 lg:px-8"
+      className="py-24 px-4 sm:px-6 lg:px-8"
       style={{ backgroundColor: colorTheme.background }}
     >
-      <div className="max-w-5xl mx-auto">
+      <style>{`
+        @keyframes cv3Pop {
+          from { opacity: 0; transform: scale(0.92); }
+          to { opacity: 1; transform: scale(1); }
+        }
+        .cv3-tile {
+          animation: cv3Pop 0.5s ease-out both;
+        }
+        .cv3-tile:nth-child(1) { animation-delay: 0s; }
+        .cv3-tile:nth-child(2) { animation-delay: 0.08s; }
+        .cv3-tile:nth-child(3) { animation-delay: 0.16s; }
+        .cv3-tile:nth-child(4) { animation-delay: 0.24s; }
+        .cv3-tile:nth-child(5) { animation-delay: 0.32s; }
+        .cv3-tile:nth-child(6) { animation-delay: 0.40s; }
+      `}</style>
+
+      <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-12">
-          <div
-            className="inline-block px-4 py-1 rounded-full text-sm font-semibold tracking-wide uppercase mb-4"
-            style={{
-              backgroundColor: `${colorTheme.primary}12`,
-              color: colorTheme.primary,
-            }}
-          >
-            Programs
-          </div>
+        <div className="text-center max-w-3xl mx-auto mb-20">
           <h2
-            className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight mb-4"
+            className="text-4xl sm:text-5xl lg:text-7xl font-black leading-[1.05] mb-6 tracking-tight"
             style={{ color: colorTheme.text }}
           >
             {c.title}
           </h2>
           <p
-            className="text-lg leading-relaxed"
-            style={{ color: `${colorTheme.text}aa` }}
+            className="text-lg sm:text-xl leading-relaxed"
+            style={{ color: `${colorTheme.text}88` }}
           >
             {c.subtitle}
           </p>
         </div>
 
-        {/* Tab buttons */}
-        <div className="flex flex-wrap justify-center gap-2 mb-10">
-          {courses.map((course: any, i: number) => (
-            <button
-              key={i}
-              onClick={() => setActiveTab(i)}
-              className="px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300"
-              style={
-                activeTab === i
-                  ? {
-                      backgroundColor: colorTheme.primary,
-                      color: "#ffffff",
-                      boxShadow: `0 4px 15px ${colorTheme.primary}44`,
-                    }
-                  : {
-                      backgroundColor: `${colorTheme.primary}08`,
-                      color: `${colorTheme.text}99`,
-                      border: `1px solid ${colorTheme.primary}15`,
-                    }
-              }
-            >
-              {course.name}
-            </button>
-          ))}
-        </div>
+        {/* Bento grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          {courses.map((course: any, i: number) => {
+            const gradientPair = tileGradients[i % tileGradients.length];
+            const spanClass = getSpanClass(i, courses.length);
 
-        {/* Tab content */}
-        <div
-          className="rounded-3xl p-8 sm:p-12 transition-all duration-300"
-          style={{
-            backgroundColor: colorTheme.background,
-            border: `1px solid ${colorTheme.primary}15`,
-            boxShadow: `0 8px 30px ${colorTheme.primary}08`,
-          }}
-        >
-          <div className="flex flex-col lg:flex-row gap-10">
-            {/* Left info */}
-            <div className="flex-1 space-y-6">
-              <div className="flex items-center gap-3">
-                <h3
-                  className="text-2xl sm:text-3xl font-bold"
-                  style={{ color: colorTheme.text }}
-                >
-                  {activeCourse.name}
-                </h3>
-                {activeCourse.category && (
-                  <span
-                    className="text-[10px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full"
-                    style={{
-                      backgroundColor: `${colorTheme.accent}15`,
-                      color: colorTheme.accent,
-                    }}
-                  >
-                    {activeCourse.category}
-                  </span>
-                )}
-              </div>
-
+            return (
               <div
-                className="w-16 h-1 rounded-full"
+                key={i}
+                className={`cv3-tile group relative ${spanClass} rounded-3xl p-8 sm:p-10 min-h-[240px] flex flex-col justify-between overflow-hidden cursor-pointer transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl`}
                 style={{
-                  background: `linear-gradient(90deg, ${colorTheme.primary}, ${colorTheme.accent})`,
-                }}
-              />
-
-              <p
-                className="text-lg leading-relaxed"
-                style={{ color: `${colorTheme.text}aa` }}
-              >
-                {activeCourse.description}
-              </p>
-
-              <a
-                href="#"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold transition-all duration-300 hover:scale-105"
-                style={{
-                  backgroundColor: colorTheme.primary,
-                  color: "#ffffff",
-                  boxShadow: `0 4px 15px ${colorTheme.primary}33`,
+                  background: `linear-gradient(135deg, ${gradientPair[0]}, ${gradientPair[1]})`,
                 }}
               >
-                Apply Now
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
-              </a>
-            </div>
-
-            {/* Right details */}
-            <div className="lg:w-72 space-y-4">
-              <div
-                className="p-5 rounded-xl"
-                style={{
-                  backgroundColor: `${colorTheme.primary}08`,
-                  border: `1px solid ${colorTheme.primary}12`,
-                }}
-              >
+                {/* Decorative circles */}
                 <div
-                  className="text-xs font-semibold uppercase tracking-wide mb-1"
-                  style={{ color: `${colorTheme.text}88` }}
-                >
-                  Duration
+                  className="absolute -top-10 -right-10 w-40 h-40 rounded-full opacity-20 group-hover:scale-125 transition-transform duration-700"
+                  style={{ backgroundColor: "#ffffff" }}
+                />
+                <div
+                  className="absolute -bottom-8 -left-8 w-32 h-32 rounded-full opacity-10"
+                  style={{ backgroundColor: "#ffffff" }}
+                />
+
+                {/* Top row: category + duration */}
+                <div className="relative z-10 flex items-center justify-between mb-auto">
+                  <div className="flex items-center gap-2">
+                    {course.category && (
+                      <span className="text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full bg-white/20 text-white/90 backdrop-blur-sm">
+                        {course.category}
+                      </span>
+                    )}
+                  </div>
+                  {course.duration && (
+                    <span className="text-xs font-medium text-white/70 bg-white/10 px-3 py-1 rounded-full backdrop-blur-sm">
+                      {course.duration}
+                    </span>
+                  )}
                 </div>
-                <div
-                  className="text-xl font-bold"
-                  style={{ color: colorTheme.primary }}
-                >
-                  {activeCourse.duration || "N/A"}
+
+                {/* Main content */}
+                <div className="relative z-10 mt-6">
+                  <h3 className="text-2xl sm:text-3xl font-black text-white leading-tight mb-2 tracking-tight">
+                    {course.name}
+                  </h3>
+                  <p className="text-sm text-white/70 leading-relaxed mb-5 line-clamp-2">
+                    {course.description}
+                  </p>
+
+                  {/* Fee badge */}
+                  {course.fee && (
+                    <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md rounded-2xl px-5 py-2.5 border border-white/10">
+                      <span className="text-lg font-black text-white tracking-tight">
+                        {course.fee}
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Bottom-right arrow */}
+                <div className="absolute bottom-6 right-6 w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:translate-x-1">
+                  <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                  </svg>
                 </div>
               </div>
-
-              <div
-                className="p-5 rounded-xl"
-                style={{
-                  backgroundColor: `${colorTheme.accent}08`,
-                  border: `1px solid ${colorTheme.accent}12`,
-                }}
-              >
-                <div
-                  className="text-xs font-semibold uppercase tracking-wide mb-1"
-                  style={{ color: `${colorTheme.text}88` }}
-                >
-                  Tuition Fee
-                </div>
-                <div
-                  className="text-xl font-bold"
-                  style={{ color: colorTheme.accent }}
-                >
-                  {activeCourse.fee || "Contact Us"}
-                </div>
-              </div>
-
-              <div
-                className="p-5 rounded-xl"
-                style={{
-                  backgroundColor: `${colorTheme.secondary}08`,
-                  border: `1px solid ${colorTheme.secondary}12`,
-                }}
-              >
-                <div
-                  className="text-xs font-semibold uppercase tracking-wide mb-1"
-                  style={{ color: `${colorTheme.text}88` }}
-                >
-                  Program Index
-                </div>
-                <div
-                  className="text-xl font-bold"
-                  style={{ color: colorTheme.secondary }}
-                >
-                  #{activeTab + 1} of {courses.length}
-                </div>
-              </div>
-            </div>
-          </div>
+            );
+          })}
         </div>
       </div>
     </section>

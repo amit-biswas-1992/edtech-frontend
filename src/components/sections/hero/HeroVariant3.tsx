@@ -12,166 +12,204 @@ interface SectionProps {
     text: string;
     name: string;
   };
-  designVariant: number;
+  designVariant?: number;
 }
 
 const defaults = {
-  title: "Empowering Education, Shaping Futures",
-  subtitle:
-    "Discover world-class learning experiences designed to unlock your full potential and prepare you for tomorrow's challenges.",
-  ctaText: "Start Your Journey",
+  title: "\u09AD\u09B0\u09CD\u09A4\u09BF \u09AA\u09B0\u09C0\u0995\u09CD\u09B7\u09BE\u09B0 \u09AA\u09CD\u09B0\u09B8\u09CD\u09A4\u09C1\u09A4\u09BF \u09A8\u09BE\u0993 \u09B8\u09C7\u09B0\u09BE\u09A6\u09C7\u09B0 \u09B8\u09BE\u09A5\u09C7",
+  subtitle: "Prepare for Admission Tests with the Best",
+  ctaText: "\u098F\u0996\u09A8\u0987 \u09AD\u09B0\u09CD\u09A4\u09BF \u09B9\u09CB\u09A8",
   ctaLink: "#",
   backgroundImage: "",
+  stats: [] as { label: string; value: string }[],
 };
+
+/* Deterministic pseudo-random positions for star particles */
+function generateStars(count: number) {
+  const stars: { x: number; y: number; size: number; delay: number; dur: number }[] = [];
+  for (let i = 0; i < count; i++) {
+    const seed = (i * 7919 + 104729) % 100000;
+    stars.push({
+      x: (seed % 1000) / 10,
+      y: ((seed * 3) % 1000) / 10,
+      size: 1 + (seed % 3),
+      delay: (seed % 5000) / 1000,
+      dur: 3 + (seed % 4000) / 1000,
+    });
+  }
+  return stars;
+}
+
+const stars = generateStars(60);
 
 export default function HeroVariant3({ content, colorTheme }: SectionProps) {
   const c = { ...defaults, ...content };
+  const stats: { label: string; value: string }[] =
+    c.stats && c.stats.length > 0
+      ? c.stats
+      : [
+          { value: "10,000+", label: "Students" },
+          { value: "95%", label: "Success" },
+          { value: "200+", label: "Courses" },
+          { value: "50+", label: "Mentors" },
+        ];
 
   return (
     <section
-      className="relative flex items-center justify-center overflow-hidden"
-      style={{
-        minHeight: "100vh",
-        background: c.backgroundImage
-          ? `url(${c.backgroundImage}) center/cover no-repeat`
-          : `linear-gradient(160deg, ${colorTheme.primary}dd 0%, #0a0a0a 40%, #0a0a0a 60%, ${colorTheme.secondary}99 100%)`,
-      }}
+      className="relative flex flex-col items-center justify-center overflow-hidden"
+      style={{ minHeight: "80vh" }}
     >
-      {/* Dark overlay */}
-      <div className="absolute inset-0 bg-black/60" />
+      {/* Scoped keyframes */}
+      <style>{`
+        @keyframes hero3-twinkle {
+          0%, 100% { opacity: 0.15; transform: scale(1); }
+          50% { opacity: 0.8; transform: scale(1.4); }
+        }
+        @keyframes hero3-neon-pulse {
+          0%, 100% {
+            box-shadow: 0 0 12px var(--neon-color),
+                        0 0 36px var(--neon-color),
+                        0 0 72px var(--neon-color);
+          }
+          50% {
+            box-shadow: 0 0 18px var(--neon-color),
+                        0 0 48px var(--neon-color),
+                        0 0 96px var(--neon-color);
+          }
+        }
+        @keyframes hero3-text-glow {
+          0%, 100% { text-shadow: 0 0 20px var(--glow-color), 0 0 60px var(--glow-color); }
+          50% { text-shadow: 0 0 30px var(--glow-color), 0 0 80px var(--glow-color), 0 0 120px var(--glow-color); }
+        }
+      `}</style>
 
-      {/* Animated grid line pattern */}
+      {/* Dark background with tint */}
       <div
-        className="absolute inset-0 opacity-[0.07]"
+        className="absolute inset-0"
         style={{
-          backgroundImage: `repeating-linear-gradient(0deg, transparent, transparent 50px, ${colorTheme.primary}40 50px, ${colorTheme.primary}40 51px), repeating-linear-gradient(90deg, transparent, transparent 50px, ${colorTheme.primary}40 50px, ${colorTheme.primary}40 51px)`,
+          background: `linear-gradient(160deg, #06061a 0%, #0a0a1a 40%, #0d0b1f 60%, #08081a 100%)`,
         }}
       />
 
-      {/* Enhanced pulsing glow effects */}
+      {/* Subtle colour bleed from theme */}
       <div
-        className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full blur-3xl opacity-20 animate-pulse-glow"
-        style={{ backgroundColor: colorTheme.primary }}
-      />
-      <div
-        className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full blur-3xl opacity-15 animate-pulse-glow"
-        style={{ backgroundColor: colorTheme.accent, animationDelay: '1.5s' }}
+        className="absolute inset-0 opacity-[0.07]"
+        style={{
+          background: `radial-gradient(ellipse at 20% 50%, ${colorTheme.primary}, transparent 60%), radial-gradient(ellipse at 80% 50%, ${colorTheme.secondary}, transparent 60%)`,
+        }}
       />
 
-      {/* Floating geometric shapes */}
-      {/* Triangle */}
+      {/* Scanline / noise overlay */}
       <div
-        className="absolute animate-float opacity-10"
-        style={{ top: '15%', left: '8%', animationDelay: '0s' }}
-      >
-        <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
-          <path d="M30 5L55 50H5L30 5Z" stroke={colorTheme.accent} strokeWidth="2" />
-        </svg>
-      </div>
-      {/* Circle */}
-      <div
-        className="absolute animate-float-slow opacity-10"
-        style={{ top: '20%', right: '12%', animationDelay: '2s' }}
-      >
-        <svg width="50" height="50" viewBox="0 0 50 50" fill="none">
-          <circle cx="25" cy="25" r="22" stroke={colorTheme.primary} strokeWidth="2" />
-        </svg>
-      </div>
-      {/* Hexagon */}
-      <div
-        className="absolute animate-float opacity-10"
-        style={{ bottom: '20%', left: '15%', animationDelay: '4s' }}
-      >
-        <svg width="55" height="55" viewBox="0 0 55 55" fill="none">
-          <path d="M27.5 2L50 15.5V42L27.5 53L5 42V15.5L27.5 2Z" stroke={colorTheme.accent} strokeWidth="2" />
-        </svg>
-      </div>
-      {/* Small circle */}
-      <div
-        className="absolute animate-float opacity-15"
-        style={{ top: '60%', right: '8%', animationDelay: '1s' }}
-      >
-        <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
-          <circle cx="15" cy="15" r="12" stroke={colorTheme.primary} strokeWidth="1.5" />
-        </svg>
-      </div>
-      {/* Triangle small */}
-      <div
-        className="absolute animate-float-slow opacity-10"
-        style={{ bottom: '35%', right: '25%', animationDelay: '3s' }}
-      >
-        <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-          <path d="M20 5L35 35H5L20 5Z" stroke={colorTheme.secondary} strokeWidth="1.5" />
-        </svg>
-      </div>
+        className="absolute inset-0 opacity-[0.03] pointer-events-none"
+        style={{
+          backgroundImage:
+            "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.05) 2px, rgba(255,255,255,0.05) 4px)",
+        }}
+      />
 
-      {/* Content */}
-      <div className="relative z-10 max-w-5xl mx-auto px-6 py-20 text-center">
-        <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black leading-none mb-8 tracking-tight">
-          {c.title.split(" ").map((word: string, i: number) => (
-            <span key={i} className="inline-block mr-4 mb-2">
-              {i % 2 === 0 ? (
-                <span
-                  className="bg-clip-text text-transparent animate-gradient"
-                  style={{
-                    backgroundImage: `linear-gradient(135deg, ${colorTheme.accent}, ${colorTheme.primary}, ${colorTheme.accent})`,
-                    backgroundSize: '200% 200%',
-                  }}
-                >
-                  {word}
-                </span>
-              ) : (
-                <span style={{ color: "#ffffff" }}>
-                  {word}
-                </span>
-              )}
-            </span>
-          ))}
+      {/* Star particles */}
+      {stars.map((star, i) => (
+        <div
+          key={i}
+          className="absolute rounded-full"
+          style={{
+            width: star.size,
+            height: star.size,
+            left: `${star.x}%`,
+            top: `${star.y}%`,
+            backgroundColor: i % 3 === 0 ? colorTheme.primary : i % 3 === 1 ? colorTheme.accent : "#ffffff",
+            animation: `hero3-twinkle ${star.dur}s ease-in-out infinite`,
+            animationDelay: `${star.delay}s`,
+            opacity: 0.2,
+          }}
+        />
+      ))}
+
+      {/* Main content */}
+      <div className="relative z-10 w-full max-w-5xl mx-auto px-5 sm:px-8 py-20 sm:py-28 text-center flex flex-col items-center">
+        {/* Title with text glow */}
+        <h1
+          className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black leading-tight mb-5 tracking-tight"
+          style={
+            {
+              color: "#ffffff",
+              "--glow-color": `${colorTheme.primary}55`,
+              animation: "hero3-text-glow 4s ease-in-out infinite",
+              textShadow: `0 0 20px ${colorTheme.primary}44, 0 0 60px ${colorTheme.primary}22`,
+            } as React.CSSProperties
+          }
+        >
+          {c.title}
         </h1>
 
+        {/* Subtitle */}
         <p
-          className="text-xl sm:text-2xl leading-relaxed mb-12 max-w-3xl mx-auto font-light tracking-wide"
-          style={{ color: "rgba(255,255,255,0.7)" }}
+          className="text-base sm:text-lg md:text-xl leading-relaxed mb-10 max-w-2xl mx-auto font-light"
+          style={{ color: "rgba(255,255,255,0.55)" }}
         >
           {c.subtitle}
         </p>
 
+        {/* CTA with neon glow */}
         <a
           href={c.ctaLink}
-          className="group inline-flex items-center gap-3 px-10 py-5 rounded-2xl text-xl font-bold transition-all duration-500 hover:scale-105 hover:gap-5 animate-pulse-glow"
-          style={{
-            background: `linear-gradient(135deg, ${colorTheme.primary}, ${colorTheme.accent})`,
-            color: "#ffffff",
-            boxShadow: `0 12px 40px ${colorTheme.primary}55`,
-          }}
+          className="inline-block px-9 sm:px-12 py-3.5 sm:py-4 rounded-xl text-base sm:text-lg font-bold tracking-wide transition-all duration-300 hover:scale-105"
+          style={
+            {
+              background: `linear-gradient(135deg, ${colorTheme.primary}, ${colorTheme.accent})`,
+              color: "#ffffff",
+              border: `1px solid ${colorTheme.primary}88`,
+              "--neon-color": `${colorTheme.primary}66`,
+              animation: "hero3-neon-pulse 3s ease-in-out infinite",
+            } as React.CSSProperties
+          }
         >
           {c.ctaText}
-          <svg
-            className="w-6 h-6 transition-transform duration-500 group-hover:translate-x-1"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2.5}
-              d="M13 7l5 5m0 0l-5 5m5-5H6"
-            />
-          </svg>
         </a>
+      </div>
 
-        {/* Scroll indicator with animate-scroll */}
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-scroll">
-          <div
-            className="w-6 h-10 rounded-full border-2 flex justify-center pt-2"
-            style={{ borderColor: "rgba(255,255,255,0.3)" }}
-          >
+      {/* Bottom glassmorphic stats bar */}
+      <div className="relative z-10 w-full px-4 sm:px-8 pb-8 sm:pb-12">
+        <div
+          className="max-w-4xl mx-auto rounded-2xl px-4 sm:px-8 py-5 flex flex-wrap items-center justify-center gap-6 sm:gap-10"
+          style={{
+            background: "rgba(255, 255, 255, 0.04)",
+            backdropFilter: "blur(20px)",
+            WebkitBackdropFilter: "blur(20px)",
+            border: "1px solid rgba(255, 255, 255, 0.07)",
+            boxShadow: `0 4px 30px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05)`,
+          }}
+        >
+          {stats.map((stat, i) => (
             <div
-              className="w-1.5 h-3 rounded-full"
-              style={{ backgroundColor: colorTheme.accent }}
-            />
-          </div>
+              key={i}
+              className="text-center px-3"
+              style={{
+                borderRight:
+                  i < stats.length - 1
+                    ? "1px solid rgba(255,255,255,0.08)"
+                    : "none",
+                paddingRight: i < stats.length - 1 ? "1.5rem" : undefined,
+              }}
+            >
+              <div
+                className="text-xl sm:text-2xl md:text-3xl font-bold"
+                style={{
+                  color: colorTheme.accent,
+                  textShadow: `0 0 12px ${colorTheme.accent}33`,
+                }}
+              >
+                {stat.value}
+              </div>
+              <div
+                className="text-xs sm:text-sm mt-1 uppercase tracking-widest"
+                style={{ color: "rgba(255,255,255,0.35)" }}
+              >
+                {stat.label}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </section>

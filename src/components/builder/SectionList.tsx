@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import {
   DndContext,
   closestCenter,
@@ -44,6 +44,7 @@ import toast from 'react-hot-toast';
 import { useAppStore } from '@/lib/store';
 import * as api from '@/lib/api';
 import { sectionMeta } from '@/lib/section-labels';
+import SectionLibrary from './SectionLibrary';
 import type { SiteSection, SectionType } from '@/lib/types';
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -180,19 +181,7 @@ export default function SectionList() {
   const updateSectionInStore = useAppStore((s) => s.updateSectionInStore);
   const reorderSectionsInStore = useAppStore((s) => s.reorderSectionsInStore);
 
-  const [showAddMenu, setShowAddMenu] = useState(false);
-  const addMenuRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!showAddMenu) return;
-    function handleClickOutside(e: MouseEvent) {
-      if (addMenuRef.current && !addMenuRef.current.contains(e.target as Node)) {
-        setShowAddMenu(false);
-      }
-    }
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [showAddMenu]);
+  const [showLibrary, setShowLibrary] = useState(false);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
@@ -268,27 +257,33 @@ export default function SectionList() {
   );
 
   const handleAddSection = useCallback(
-    async (sectionType: SectionType) => {
+    async (sectionType: SectionType, designVariant: number) => {
       if (!currentSite) return;
-      setShowAddMenu(false);
+      setShowLibrary(false);
       try {
         const newSection = await api.sections.addSection(currentSite.id, {
           sectionType,
-          designVariant: 1,
+          designVariant,
           order: sections.length,
           content: {},
         });
         setSections([...sections, newSection]);
         selectSection(newSection.id);
         toast.success(`${sectionMeta[sectionType].label} added`);
+
+        // Auto-scroll to new section (A4)
+        setTimeout(() => {
+          const el = document.getElementById(`section-${newSection.id}`);
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }, 200);
       } catch {
         toast.error('Failed to add section');
       }
     },
     [currentSite, sections, setSections, selectSection]
   );
-
-  const allSectionTypes = Object.keys(sectionMeta) as SectionType[];
 
   return (
     <div className="flex flex-col h-full">
@@ -335,42 +330,23 @@ export default function SectionList() {
       </div>
 
       {/* Add Section button */}
-      <div className="relative px-3 py-3 border-t border-gray-200" ref={addMenuRef}>
+      <div className="px-3 py-3 border-t border-gray-200">
         <button
-          onClick={() => setShowAddMenu((v) => !v)}
+          onClick={() => setShowLibrary(true)}
           className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors border border-blue-200"
         >
           <HiOutlinePlus className="w-4 h-4" />
           Add Section
         </button>
-
-        {/* Add Section Dropdown */}
-        {showAddMenu && (
-          <div className="absolute bottom-full left-3 right-3 mb-2 bg-white rounded-xl shadow-2xl border border-gray-200 max-h-72 overflow-y-auto z-50">
-            <div className="p-2">
-              <p className="px-2 py-1.5 text-xs font-semibold text-gray-400 uppercase tracking-wide">
-                Available Sections
-              </p>
-              {allSectionTypes.map((type) => {
-                const Icon = getSectionIcon(type);
-                const meta = sectionMeta[type];
-                return (
-                  <button
-                    key={type}
-                    onClick={() => handleAddSection(type)}
-                    className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left hover:bg-gray-50 transition-colors"
-                  >
-                    <Icon className="w-4 h-4 text-gray-400" />
-                    <span className="text-sm text-gray-700 font-medium">
-                      {meta.label}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        )}
       </div>
+
+      {/* Section Library Modal */}
+      {showLibrary && (
+        <SectionLibrary
+          onAdd={handleAddSection}
+          onClose={() => setShowLibrary(false)}
+        />
+      )}
     </div>
   );
 }

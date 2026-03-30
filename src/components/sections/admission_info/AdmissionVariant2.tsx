@@ -44,133 +44,232 @@ export default function AdmissionVariant2({ content, colorTheme }: SectionProps)
 
   return (
     <section
-      className="py-20 px-4 sm:px-6 lg:px-8"
+      className="py-24 px-4 sm:px-6 lg:px-8"
       style={{ backgroundColor: colorTheme.background }}
     >
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <div
-            className="inline-block px-4 py-1 rounded-full text-sm font-semibold tracking-wide uppercase mb-4"
-            style={{
-              backgroundColor: `${colorTheme.primary}12`,
-              color: colorTheme.primary,
-            }}
-          >
-            Admissions
+        {/* Header - left aligned corporate style */}
+        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-16">
+          <div className="max-w-2xl">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-1" style={{ backgroundColor: colorTheme.primary }} />
+              <span
+                className="text-sm font-bold tracking-widest uppercase"
+                style={{ color: colorTheme.primary }}
+              >
+                Admissions
+              </span>
+            </div>
+            <h2
+              className="text-3xl sm:text-4xl lg:text-5xl font-black leading-tight tracking-tight"
+              style={{ color: colorTheme.text }}
+            >
+              {c.title}
+            </h2>
           </div>
-          <h2
-            className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight"
-            style={{ color: colorTheme.text }}
+          <p
+            className="text-base leading-relaxed max-w-md lg:text-right"
+            style={{ color: `${colorTheme.text}77` }}
           >
-            {c.title}
-          </h2>
+            Follow our structured admission process to secure your place. Each step is designed for a smooth experience.
+          </p>
         </div>
 
-        {/* Cards grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-          {steps.map((step: any, i: number) => {
-            const colors = [colorTheme.primary, colorTheme.secondary, colorTheme.accent];
-            const cardColor = colors[i % colors.length];
-
-            return (
-              <div
-                key={i}
-                className="relative p-6 rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-lg overflow-hidden"
-                style={{
-                  backgroundColor: colorTheme.background,
-                  border: `1px solid ${cardColor}20`,
-                }}
-              >
-                {/* Step number watermark */}
+        {/* Horizontal timeline - desktop */}
+        <div className="hidden lg:block mb-16">
+          {/* Timeline bar */}
+          <div className="relative mb-12">
+            <div
+              className="h-0.5 w-full"
+              style={{ backgroundColor: `${colorTheme.primary}15` }}
+            />
+            {/* Step indicators on the line */}
+            <div className="absolute inset-0 flex justify-between items-center">
+              {steps.map((_: any, i: number) => (
                 <div
-                  className="absolute -top-3 -right-2 text-7xl font-black opacity-5 select-none"
-                  style={{ color: cardColor }}
+                  key={i}
+                  className="relative flex flex-col items-center"
+                  style={{ width: `${100 / steps.length}%` }}
                 >
-                  {String(i + 1).padStart(2, "0")}
+                  <div
+                    className="w-12 h-12 rounded-none flex items-center justify-center text-sm font-black transition-all duration-300 hover:scale-110"
+                    style={{
+                      backgroundColor: colorTheme.primary,
+                      color: "#ffffff",
+                    }}
+                  >
+                    {String(i + 1).padStart(2, "0")}
+                  </div>
                 </div>
+              ))}
+            </div>
+          </div>
 
-                {/* Icon */}
+          {/* Step cards below timeline */}
+          <div className="grid grid-cols-5 gap-6">
+            {steps.map((step: any, i: number) => (
+              <div key={i} className="group">
                 <div
-                  className="w-12 h-12 rounded-xl flex items-center justify-center mb-4"
+                  className="p-5 border-t-2 transition-all duration-300 hover:border-t-4"
                   style={{
-                    backgroundColor: `${cardColor}12`,
-                    color: cardColor,
+                    borderTopColor: colorTheme.primary,
+                    backgroundColor: `${colorTheme.primary}04`,
                   }}
                 >
-                  {stepIcons[i % stepIcons.length]}
+                  <div
+                    className="mb-3 transition-all duration-300 group-hover:scale-110 inline-block"
+                    style={{ color: colorTheme.primary }}
+                  >
+                    {stepIcons[i % stepIcons.length]}
+                  </div>
+                  <h4
+                    className="text-base font-bold mb-2 tracking-tight"
+                    style={{ color: colorTheme.text }}
+                  >
+                    {step.title}
+                  </h4>
+                  <p
+                    className="text-sm leading-relaxed"
+                    style={{ color: `${colorTheme.text}77` }}
+                  >
+                    {step.description}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Mobile/tablet: alternating left-right layout */}
+        <div className="lg:hidden mb-16 space-y-0">
+          {steps.map((step: any, i: number) => {
+            const isEven = i % 2 === 0;
+            return (
+              <div key={i} className="flex items-stretch">
+                {/* Left content or spacer */}
+                <div className={`flex-1 ${isEven ? "pr-6" : ""}`}>
+                  {isEven && (
+                    <div
+                      className="p-5 text-right border-r-2 h-full flex flex-col justify-center"
+                      style={{ borderRightColor: colorTheme.primary }}
+                    >
+                      <div className="flex items-center justify-end gap-2 mb-2">
+                        <h4 className="text-base font-bold tracking-tight" style={{ color: colorTheme.text }}>
+                          {step.title}
+                        </h4>
+                        <span
+                          className="w-8 h-8 flex items-center justify-center text-xs font-black flex-shrink-0"
+                          style={{ backgroundColor: colorTheme.primary, color: "#ffffff" }}
+                        >
+                          {String(i + 1).padStart(2, "0")}
+                        </span>
+                      </div>
+                      <p className="text-sm leading-relaxed" style={{ color: `${colorTheme.text}77` }}>
+                        {step.description}
+                      </p>
+                    </div>
+                  )}
                 </div>
 
-                <div
-                  className="text-xs font-bold uppercase tracking-widest mb-2"
-                  style={{ color: cardColor }}
-                >
-                  Step {i + 1}
+                {/* Center line */}
+                <div className="relative flex flex-col items-center" style={{ width: "2px" }}>
+                  <div className="w-full h-full" style={{ backgroundColor: `${colorTheme.primary}20` }} />
                 </div>
 
-                <h4
-                  className="text-lg font-bold mb-2"
-                  style={{ color: colorTheme.text }}
-                >
-                  {step.title}
-                </h4>
-
-                <p
-                  className="text-sm leading-relaxed"
-                  style={{ color: `${colorTheme.text}99` }}
-                >
-                  {step.description}
-                </p>
+                {/* Right content or spacer */}
+                <div className={`flex-1 ${!isEven ? "pl-6" : ""}`}>
+                  {!isEven && (
+                    <div
+                      className="p-5 border-l-2 h-full flex flex-col justify-center"
+                      style={{ borderLeftColor: colorTheme.primary }}
+                    >
+                      <div className="flex items-center gap-2 mb-2">
+                        <span
+                          className="w-8 h-8 flex items-center justify-center text-xs font-black flex-shrink-0"
+                          style={{ backgroundColor: colorTheme.primary, color: "#ffffff" }}
+                        >
+                          {String(i + 1).padStart(2, "0")}
+                        </span>
+                        <h4 className="text-base font-bold tracking-tight" style={{ color: colorTheme.text }}>
+                          {step.title}
+                        </h4>
+                      </div>
+                      <p className="text-sm leading-relaxed" style={{ color: `${colorTheme.text}77` }}>
+                        {step.description}
+                      </p>
+                    </div>
+                  )}
+                </div>
               </div>
             );
           })}
         </div>
 
-        {/* Deadline & Eligibility info boxes */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+        {/* Info boxes - corporate style */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-0 max-w-4xl mx-auto">
           {c.deadline && (
             <div
-              className="p-6 rounded-2xl text-center"
+              className="p-8 flex items-start gap-5 transition-all duration-300 hover:bg-opacity-80 border-l-4"
               style={{
-                background: `linear-gradient(135deg, ${colorTheme.accent}10, ${colorTheme.accent}05)`,
-                border: `1px solid ${colorTheme.accent}20`,
+                borderLeftColor: colorTheme.accent,
+                backgroundColor: `${colorTheme.accent}06`,
               }}
             >
-              <svg className="w-8 h-8 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke={colorTheme.accent} strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <h4
-                className="font-bold text-sm uppercase tracking-wide mb-2"
-                style={{ color: colorTheme.accent }}
+              <div
+                className="w-12 h-12 flex items-center justify-center flex-shrink-0"
+                style={{
+                  backgroundColor: colorTheme.accent,
+                  color: "#ffffff",
+                }}
               >
-                Application Deadline
-              </h4>
-              <p className="font-medium" style={{ color: colorTheme.text }}>
-                {c.deadline}
-              </p>
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <div>
+                <h4
+                  className="font-black text-xs uppercase tracking-widest mb-2"
+                  style={{ color: colorTheme.accent }}
+                >
+                  Application Deadline
+                </h4>
+                <p className="font-medium leading-relaxed" style={{ color: `${colorTheme.text}cc` }}>
+                  {c.deadline}
+                </p>
+              </div>
             </div>
           )}
 
           {c.eligibility && (
             <div
-              className="p-6 rounded-2xl text-center"
+              className="p-8 flex items-start gap-5 transition-all duration-300 hover:bg-opacity-80 border-l-4"
               style={{
-                background: `linear-gradient(135deg, ${colorTheme.primary}10, ${colorTheme.primary}05)`,
-                border: `1px solid ${colorTheme.primary}20`,
+                borderLeftColor: colorTheme.primary,
+                backgroundColor: `${colorTheme.primary}06`,
               }}
             >
-              <svg className="w-8 h-8 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke={colorTheme.primary} strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-              </svg>
-              <h4
-                className="font-bold text-sm uppercase tracking-wide mb-2"
-                style={{ color: colorTheme.primary }}
+              <div
+                className="w-12 h-12 flex items-center justify-center flex-shrink-0"
+                style={{
+                  backgroundColor: colorTheme.primary,
+                  color: "#ffffff",
+                }}
               >
-                Eligibility Criteria
-              </h4>
-              <p className="font-medium" style={{ color: colorTheme.text }}>
-                {c.eligibility}
-              </p>
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div>
+                <h4
+                  className="font-black text-xs uppercase tracking-widest mb-2"
+                  style={{ color: colorTheme.primary }}
+                >
+                  Eligibility Criteria
+                </h4>
+                <p className="font-medium leading-relaxed" style={{ color: `${colorTheme.text}cc` }}>
+                  {c.eligibility}
+                </p>
+              </div>
             </div>
           )}
         </div>

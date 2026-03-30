@@ -35,31 +35,39 @@ export default function SuccessVariant2({ content, colorTheme }: SectionProps) {
 
   return (
     <section
-      className="py-20 px-4 sm:px-6 lg:px-8"
+      className="py-24 px-4 sm:px-6 lg:px-8"
       style={{ backgroundColor: colorTheme.background }}
     >
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <div
-            className="inline-block px-4 py-1 rounded-full text-sm font-semibold tracking-wide uppercase mb-4"
-            style={{
-              backgroundColor: `${colorTheme.primary}12`,
-              color: colorTheme.primary,
-            }}
-          >
-            Achievements
+        {/* Header - corporate left aligned */}
+        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-16">
+          <div className="max-w-2xl">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-1" style={{ backgroundColor: colorTheme.primary }} />
+              <span
+                className="text-sm font-bold tracking-widest uppercase"
+                style={{ color: colorTheme.primary }}
+              >
+                Achievements
+              </span>
+            </div>
+            <h2
+              className="text-3xl sm:text-4xl lg:text-5xl font-black leading-tight tracking-tight"
+              style={{ color: colorTheme.text }}
+            >
+              {c.title}
+            </h2>
           </div>
-          <h2
-            className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight mb-4"
-            style={{ color: colorTheme.text }}
+          <p
+            className="text-base leading-relaxed max-w-sm lg:text-right"
+            style={{ color: `${colorTheme.text}77` }}
           >
-            {c.title}
-          </h2>
+            Our students consistently achieve outstanding results in national and university-level examinations.
+          </p>
         </div>
 
         {/* Cards grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-0">
           {stories.map((story: any, i: number) => {
             const colors = [colorTheme.primary, colorTheme.secondary, colorTheme.accent];
             const cardColor = colors[i % colors.length];
@@ -67,81 +75,113 @@ export default function SuccessVariant2({ content, colorTheme }: SectionProps) {
             return (
               <div
                 key={i}
-                className="group relative rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
+                className="group relative transition-all duration-300 hover:z-10"
                 style={{
-                  border: `1px solid ${cardColor}20`,
+                  border: `1px solid ${colorTheme.text}08`,
                 }}
               >
-                {/* Image / gradient header */}
+                {/* Top accent line */}
                 <div
-                  className="h-36 relative"
-                  style={{
-                    background: story.image
-                      ? `url(${story.image}) center/cover no-repeat`
-                      : `linear-gradient(135deg, ${cardColor}40, ${cardColor}20)`,
-                  }}
-                >
-                  {/* Year badge */}
-                  {story.year && (
-                    <div
-                      className="absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-bold"
-                      style={{
-                        backgroundColor: cardColor,
-                        color: "#ffffff",
-                      }}
-                    >
-                      {story.year}
-                    </div>
-                  )}
+                  className="h-1 w-0 group-hover:w-full transition-all duration-500"
+                  style={{ backgroundColor: cardColor }}
+                />
 
-                  {/* Avatar overlapping bottom */}
-                  <div className="absolute -bottom-8 left-6">
+                <div className="p-8">
+                  {/* Student number */}
+                  <div
+                    className="text-6xl font-black mb-6 select-none leading-none"
+                    style={{ color: `${cardColor}10` }}
+                  >
+                    {String(i + 1).padStart(2, "0")}
+                  </div>
+
+                  <div className="flex items-start gap-4 mb-6">
+                    {/* Avatar */}
                     <div
-                      className="w-16 h-16 rounded-xl flex items-center justify-center text-2xl font-bold border-4"
+                      className="w-14 h-14 flex items-center justify-center text-xl font-black flex-shrink-0 transition-all duration-300 group-hover:scale-105"
                       style={{
-                        background: story.image
-                          ? `url(${story.image}) center/cover no-repeat`
-                          : `linear-gradient(135deg, ${cardColor}, ${cardColor}cc)`,
-                        borderColor: colorTheme.background,
-                        color: "#ffffff",
+                        backgroundColor: `${cardColor}10`,
+                        color: cardColor,
                       }}
                     >
-                      {!story.image && story.name?.charAt(0)}
+                      {story.image ? (
+                        <div
+                          className="w-full h-full"
+                          style={{ background: `url(${story.image}) center/cover no-repeat` }}
+                        />
+                      ) : (
+                        story.name?.charAt(0)
+                      )}
+                    </div>
+
+                    <div className="min-w-0">
+                      <h4
+                        className="text-lg font-black tracking-tight truncate"
+                        style={{ color: colorTheme.text }}
+                      >
+                        {story.name}
+                      </h4>
+                      {story.year && (
+                        <span
+                          className="text-xs font-bold tracking-widest uppercase"
+                          style={{ color: `${colorTheme.text}55` }}
+                        >
+                          Batch {story.year}
+                        </span>
+                      )}
                     </div>
                   </div>
-                </div>
 
-                {/* Content */}
-                <div
-                  className="pt-12 pb-6 px-6"
-                  style={{ backgroundColor: colorTheme.background }}
-                >
-                  <h4
-                    className="text-lg font-bold mb-1"
-                    style={{ color: colorTheme.text }}
-                  >
-                    {story.name}
-                  </h4>
-
-                  <div className="flex items-center gap-2 mt-3">
-                    <svg
-                      className="w-4 h-4 flex-shrink-0"
-                      fill={cardColor}
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                    </svg>
+                  {/* Achievement tag */}
+                  <div className="flex items-center gap-2">
+                    <div
+                      className="w-2 h-2 flex-shrink-0"
+                      style={{ backgroundColor: cardColor }}
+                    />
                     <span
-                      className="text-sm font-semibold"
+                      className="text-sm font-bold tracking-tight"
                       style={{ color: cardColor }}
                     >
                       {story.result}
                     </span>
                   </div>
                 </div>
+
+                {/* Bottom border on hover */}
+                <div
+                  className="h-0 group-hover:h-1 transition-all duration-300"
+                  style={{ backgroundColor: cardColor }}
+                />
               </div>
             );
           })}
+        </div>
+
+        {/* Summary bar */}
+        <div
+          className="mt-12 p-6 flex flex-col sm:flex-row items-center justify-between gap-4"
+          style={{
+            backgroundColor: `${colorTheme.primary}06`,
+            borderLeft: `4px solid ${colorTheme.primary}`,
+          }}
+        >
+          <p
+            className="text-sm font-bold tracking-wide uppercase"
+            style={{ color: colorTheme.primary }}
+          >
+            {stories.length} success stories and counting
+          </p>
+          <div className="flex items-center gap-6">
+            {["GPA 5.00", "BUET", "Scholarships"].map((tag, i) => (
+              <span
+                key={i}
+                className="text-xs font-bold tracking-widest uppercase"
+                style={{ color: `${colorTheme.text}55` }}
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
         </div>
       </div>
     </section>

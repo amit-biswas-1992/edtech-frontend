@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 
 interface SectionProps {
   content: Record<string, any>;
@@ -19,86 +19,115 @@ const defaults = {
   title: "Photo Gallery",
   subtitle: "Explore moments from our campus and events.",
   images: [
-    { src: "", caption: "Modern Classrooms", alt: "Classroom" },
-    { src: "", caption: "Science Laboratory", alt: "Lab" },
-    { src: "", caption: "Library & Study Area", alt: "Library" },
-    { src: "", caption: "Annual Science Fair", alt: "Science Fair" },
-    { src: "", caption: "Student Orientation", alt: "Orientation" },
-    { src: "", caption: "Award Ceremony", alt: "Awards" },
-    { src: "", caption: "Computer Lab", alt: "Computer Lab" },
-    { src: "", caption: "Sports Day", alt: "Sports" },
+    { src: "", caption: "Modern Classrooms", alt: "Classroom", category: "Campus" },
+    { src: "", caption: "Science Laboratory", alt: "Lab", category: "Facilities" },
+    { src: "", caption: "Library & Study Area", alt: "Library", category: "Facilities" },
+    { src: "", caption: "Annual Science Fair", alt: "Science Fair", category: "Events" },
+    { src: "", caption: "Student Orientation", alt: "Orientation", category: "Events" },
+    { src: "", caption: "Award Ceremony", alt: "Awards", category: "Campus" },
+    { src: "", caption: "Computer Lab", alt: "Computer Lab", category: "Facilities" },
+    { src: "", caption: "Sports Day", alt: "Sports", category: "Events" },
   ],
 };
-
-// Predefined varying heights for masonry effect
-const heightClasses = [
-  "h-48",
-  "h-64",
-  "h-56",
-  "h-72",
-  "h-52",
-  "h-60",
-  "h-44",
-  "h-68",
-];
 
 export default function GalleryVariant2({ content, colorTheme }: SectionProps) {
   const c = { ...defaults, ...content };
   const images = c.images || defaults.images;
+  const [activeTab, setActiveTab] = useState("All");
+
+  const categories = ["All", ...Array.from(new Set(images.map((img: any) => img.category || "General")))];
+  const filteredImages = activeTab === "All"
+    ? images
+    : images.filter((img: any) => (img.category || "General") === activeTab);
 
   return (
-    <section
-      className="py-20 px-4"
-      style={{
-        backgroundColor: colorTheme.background,
-        background: `linear-gradient(180deg, ${colorTheme.primary}05 0%, ${colorTheme.background} 100%)`,
-      }}
-    >
-      <div className="max-w-6xl mx-auto">
-        {c.title && (
-          <h2
-            className="text-3xl sm:text-4xl font-bold text-center mb-4"
-            style={{ color: colorTheme.primary }}
-          >
-            {c.title}
-          </h2>
-        )}
-        {c.subtitle && (
-          <p
-            className="text-center text-lg mb-14 max-w-2xl mx-auto"
-            style={{ color: `${colorTheme.text}99` }}
-          >
-            {c.subtitle}
-          </p>
-        )}
+    <section className="py-24 px-4" style={{ backgroundColor: colorTheme.background }}>
+      <div className="max-w-7xl mx-auto">
+        {/* Header with accent line */}
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between mb-16 gap-6">
+          <div>
+            <div
+              className="w-12 h-1 mb-6"
+              style={{ backgroundColor: colorTheme.primary }}
+            />
+            {c.title && (
+              <h2
+                className="text-4xl sm:text-5xl font-extrabold tracking-tight leading-tight"
+                style={{ color: colorTheme.text }}
+              >
+                {c.title}
+              </h2>
+            )}
+            {c.subtitle && (
+              <p
+                className="text-lg mt-3 max-w-lg"
+                style={{ color: `${colorTheme.text}70` }}
+              >
+                {c.subtitle}
+              </p>
+            )}
+          </div>
 
-        {/* Masonry layout using CSS columns */}
-        <div className="columns-1 sm:columns-2 lg:columns-3 gap-4 space-y-4">
-          {images.map(
+          {/* Category tabs - corporate style */}
+          <div
+            className="flex gap-0 border-b-2 self-start sm:self-auto"
+            style={{ borderColor: `${colorTheme.text}15` }}
+          >
+            {categories.map((cat: string) => (
+              <button
+                key={cat}
+                onClick={() => setActiveTab(cat)}
+                className="px-5 py-3 text-sm font-semibold tracking-wide uppercase transition-all duration-300 relative whitespace-nowrap"
+                style={{
+                  color: activeTab === cat ? colorTheme.primary : `${colorTheme.text}60`,
+                }}
+              >
+                {cat}
+                {/* Active tab indicator */}
+                <span
+                  className="absolute bottom-0 left-0 right-0 h-[3px] transition-all duration-300"
+                  style={{
+                    backgroundColor: activeTab === cat ? colorTheme.primary : "transparent",
+                    transform: activeTab === cat ? "scaleX(1)" : "scaleX(0)",
+                  }}
+                />
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Clean structured grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-1">
+          {filteredImages.map(
             (
-              img: { src: string; caption: string; alt: string },
+              img: { src: string; caption: string; alt: string; category?: string },
               i: number
             ) => {
-              const heights = [192, 256, 224, 288, 208, 240, 176, 272];
-              const h = heights[i % heights.length];
-
+              // First two items span 2 columns on large screens
+              const isWide = i < 2;
               return (
                 <div
                   key={i}
-                  className="break-inside-avoid rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 group relative"
-                  style={{ height: `${h}px`, backgroundColor: `${colorTheme.primary}10` }}
+                  className={`group relative overflow-hidden cursor-pointer ${
+                    isWide ? "lg:col-span-2" : "lg:col-span-1"
+                  }`}
+                  style={{
+                    aspectRatio: isWide ? "16/9" : "1/1",
+                    backgroundColor: `${colorTheme.text}06`,
+                  }}
                 >
+                  {/* Image or placeholder */}
                   {img.src ? (
                     <img
                       src={img.src}
                       alt={img.alt || img.caption}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
                   ) : (
                     <div className="w-full h-full flex flex-col items-center justify-center gap-3">
                       <svg
-                        className="w-12 h-12 opacity-20"
-                        style={{ color: colorTheme.primary }}
+                        className="w-10 h-10 opacity-15"
+                        style={{ color: colorTheme.text }}
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -111,27 +140,70 @@ export default function GalleryVariant2({ content, colorTheme }: SectionProps) {
                         />
                       </svg>
                       <span
-                        className="text-xs font-medium opacity-40"
-                        style={{ color: colorTheme.primary }}
+                        className="text-xs font-semibold tracking-wider uppercase opacity-30"
+                        style={{ color: colorTheme.text }}
                       >
                         {img.caption}
                       </span>
                     </div>
                   )}
 
-                  {/* Caption overlay */}
+                  {/* Hover overlay with accent color */}
                   <div
-                    className="absolute bottom-0 left-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    className="absolute inset-0 flex flex-col justify-end transition-all duration-500 translate-y-full group-hover:translate-y-0"
                     style={{
-                      background: `linear-gradient(to top, ${colorTheme.primary}cc 0%, transparent 100%)`,
+                      backgroundColor: `${colorTheme.primary}ee`,
                     }}
                   >
-                    <p className="text-white text-sm font-semibold">{img.caption}</p>
+                    <div className="p-6">
+                      {/* Accent line */}
+                      <div className="w-8 h-0.5 bg-white/60 mb-3" />
+                      <p className="text-white font-bold text-lg tracking-tight">
+                        {img.caption}
+                      </p>
+                      {img.category && (
+                        <p className="text-white/60 text-xs font-semibold uppercase tracking-widest mt-2">
+                          {img.category}
+                        </p>
+                      )}
+                      {/* View indicator */}
+                      <div className="flex items-center gap-2 mt-4">
+                        <span className="text-white/80 text-xs font-medium uppercase tracking-wider">View</span>
+                        <svg className="w-4 h-4 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Index number in corner */}
+                  <div
+                    className="absolute top-4 left-4 text-xs font-bold opacity-0 group-hover:opacity-100 transition-all duration-300 delay-200"
+                    style={{ color: "rgba(255,255,255,0.5)" }}
+                  >
+                    {String(i + 1).padStart(2, "0")}
                   </div>
                 </div>
               );
             }
           )}
+        </div>
+
+        {/* Bottom bar with count */}
+        <div
+          className="mt-12 pt-6 flex justify-between items-center"
+          style={{ borderTop: `2px solid ${colorTheme.text}10` }}
+        >
+          <span
+            className="text-sm font-semibold tracking-wider uppercase"
+            style={{ color: `${colorTheme.text}40` }}
+          >
+            {filteredImages.length} {filteredImages.length === 1 ? "Photo" : "Photos"}
+          </span>
+          <div
+            className="w-16 h-0.5"
+            style={{ backgroundColor: colorTheme.primary }}
+          />
         </div>
       </div>
     </section>

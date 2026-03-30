@@ -15,14 +15,58 @@ import {
   HiOutlineMoon,
   HiOutlineSun,
   HiOutlineTranslate,
+  HiOutlineReply,
 } from 'react-icons/hi';
 import toast from 'react-hot-toast';
+import { useStore } from 'zustand';
 import { useAppStore } from '@/lib/store';
 import * as api from '@/lib/api';
 import ColorPicker from './ColorPicker';
 import SeoEditor from './SeoEditor';
 import FontSettings from './FontSettings';
 import type { Language } from '@/lib/translations';
+
+function UndoRedoButtons() {
+  const temporalStore = useAppStore.temporal;
+  const pastStates = useStore(temporalStore, (s) => s.pastStates);
+  const futureStates = useStore(temporalStore, (s) => s.futureStates);
+  const undo = useStore(temporalStore, (s) => s.undo);
+  const redo = useStore(temporalStore, (s) => s.redo);
+
+  const canUndo = pastStates.length > 0;
+  const canRedo = futureStates.length > 0;
+
+  return (
+    <div className="flex items-center gap-0.5 bg-gray-100 rounded-lg p-0.5">
+      <button
+        onClick={() => undo()}
+        disabled={!canUndo}
+        className={`flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-md transition-all ${
+          canUndo
+            ? 'text-gray-700 hover:bg-white hover:shadow-sm'
+            : 'text-gray-300 cursor-not-allowed'
+        }`}
+        title="Undo (Ctrl+Z)"
+      >
+        <HiOutlineReply className="w-3.5 h-3.5" />
+        <span className="hidden lg:inline">Undo</span>
+      </button>
+      <button
+        onClick={() => redo()}
+        disabled={!canRedo}
+        className={`flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-md transition-all ${
+          canRedo
+            ? 'text-gray-700 hover:bg-white hover:shadow-sm'
+            : 'text-gray-300 cursor-not-allowed'
+        }`}
+        title="Redo (Ctrl+Shift+Z)"
+      >
+        <HiOutlineReply className="w-3.5 h-3.5 -scale-x-100" />
+        <span className="hidden lg:inline">Redo</span>
+      </button>
+    </div>
+  );
+}
 
 export default function BuilderHeader() {
   const router = useRouter();
@@ -383,6 +427,9 @@ export default function BuilderHeader() {
             </svg>
             <span className="hidden md:inline">Fonts</span>
           </button>
+
+          {/* Undo / Redo */}
+          <UndoRedoButtons />
 
           {/* SEO */}
           <button
